@@ -1,17 +1,24 @@
 package vision_por_computador;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
-import javax.swing.*;
-
+@SuppressWarnings("serial")
 public class VentanaDebug extends JFrame {
   
   private JTextArea log;
   private JPanel panel;
   
+  /**
+   * Instancia un nuevo objeto
+   * de tipo ventana debug.
+   */
   public VentanaDebug() {
     super("Console Log");
     this.panel = new JPanel(new BorderLayout());
@@ -38,15 +45,30 @@ public class VentanaDebug extends JFrame {
     escribirMensaje("> Inicio de programa");
   }
   
+  /**
+   * Mostrar debug.
+   *
+   * @param visible the visible
+   */
   public void mostrarDebug(boolean visible) {
     this.setVisible(visible);
   }
   
+  /**
+   * Escribir mensaje.
+   *
+   * @param mensaje the mensaje
+   */
   public void escribirMensaje(String mensaje) {
     this.log.append(mensaje + "\n");
     this.log.setCaretPosition(this.log.getDocument().getLength());
   }
   
+  /**
+   * Estado visible.
+   *
+   * @return true, si verdadero
+   */
   public boolean estadoVisible() {
     return this.isVisible();
   }

@@ -19,10 +19,18 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+@SuppressWarnings("serial")
 public class HistogramaAcumulativo extends JFrame {
   
   private int[] nGris;
   
+  /**
+   * Instancia un nuevo objeto
+   * de tipo histograma acumulativo.
+   *
+   * @param title the title
+   * @param nivelGris the nivel gris
+   */
   public HistogramaAcumulativo(String title, int[] nivelGris) {
     super(title);
     this.nGris = nivelGris;
@@ -32,6 +40,11 @@ public class HistogramaAcumulativo extends JFrame {
     this.add(chartPanel, BorderLayout.CENTER);
   }
   
+  /**
+   * Creates the dataset.
+   *
+   * @return category dataset
+   */
   private CategoryDataset createDataset() {
     final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     int acumulador = 0;
@@ -42,6 +55,12 @@ public class HistogramaAcumulativo extends JFrame {
     return dataset;   
   }
   
+  /**
+   * Creates the chart.
+   *
+   * @param dataset the dataset
+   * @return j free chart
+   */
   private JFreeChart createChart(final CategoryDataset dataset) {    
     final JFreeChart chart = ChartFactory.createBarChart(
          "Histograma Acumulativo",                 // chart title

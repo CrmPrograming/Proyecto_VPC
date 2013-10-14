@@ -1,6 +1,5 @@
 package vision_por_computador;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -16,7 +15,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
@@ -34,6 +32,7 @@ import com.sun.media.jai.codec.FileSeekableStream;
 import com.sun.media.jai.codec.TIFFDecodeParam;
 import com.sun.media.jai.codec.TIFFEncodeParam;
 
+@SuppressWarnings("serial")
 public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   
   private final static String TITULO_APLICACION = "Sin nombre";
@@ -48,6 +47,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   private int cantidadImagenes = 0;
   private VentanaImagen imagenFocus;
 
+  /**
+   * Instancia un nuevo objeto
+   * de tipo panel principal.
+   */
   public PanelPrincipal() {
     super(TITULO_APLICACION);
     this.imagenFocus = null;
@@ -66,6 +69,11 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     this.setVisible(true);
   }
   
+  /**
+   * Crear menu.
+   *
+   * @return j menu bar
+   */
   private JMenuBar crearMenu() {
     JMenuBar barraMenu = new JMenuBar();
     JMenu menu = null;
@@ -189,6 +197,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     return barraMenu;
   }  
   
+  /**
+   * Cargar configuracion.
+   */
   private void cargarConfiguracion() {
     try {
       BufferedReader bLectura = new BufferedReader(new FileReader(FICHERO_CONFIG));
@@ -220,6 +231,11 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * Action performed.
+   *
+   * @param arg0 the arg0
+   */
   @Override
   public void actionPerformed(ActionEvent arg0) {
     this.debug.escribirMensaje("> Abriendo pestaña '" + arg0.getActionCommand() + "'");
@@ -263,6 +279,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * Cargar imagen.
+   */
   private void cargarImagen() {
     boolean seguir = false;
     JFileChooser fc = null;
@@ -306,6 +325,13 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     } while (!seguir);    
   }
   
+  /**
+   * Construir imagen.
+   *
+   * @param selectedFile the selected file
+   * @return buffered image
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   private BufferedImage construirImagen(File selectedFile) throws IOException {
     FileSeekableStream stream = new FileSeekableStream(selectedFile.getAbsolutePath());
     TIFFDecodeParam decodeParam = new TIFFDecodeParam();
@@ -317,6 +343,11 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     return img;
   }
 
+  /**
+   * Mostrar error.
+   *
+   * @param idError the id error
+   */
   private void mostrarError(int idError) {
     JFrame.setDefaultLookAndFeelDecorated(false);
     JOptionPane.showMessageDialog(this,
@@ -326,10 +357,16 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     JFrame.setDefaultLookAndFeelDecorated(true);
   }
   
+  /**
+   * Cerrar.
+   */
   private void cerrar() {
     System.exit(0);    
   }
   
+  /**
+   * Mostrar acerca de.
+   */
   private void mostrarAcercaDe() {
     JFrame.setDefaultLookAndFeelDecorated(false);
     JOptionPane.showMessageDialog(this,
@@ -339,6 +376,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     JFrame.setDefaultLookAndFeelDecorated(true);
   }
   
+  /**
+   * Duplicar imagen.
+   */
   private void duplicarImagen() {
     if (this.imagenFocus == null) {
       mostrarError(22);      
@@ -362,6 +402,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * Guardar imagen.
+   */
   private void guardarImagen() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -373,6 +416,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * Guardar imagen como.
+   */
   private void guardarImagenComo() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -398,6 +444,11 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * Cambiar imagen gris.
+   * <b>Nota:</b> revisar transformación de color a gris
+   * 
+   */
   private void cambiarImagenGris() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -427,6 +478,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * Mostrar informacion.
+   */
   private void mostrarInformacion() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -449,6 +503,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * Histograma absoluto.
+   */
   private void histogramaAbsoluto() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -459,6 +516,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * Histograma acumulativo.
+   */
   private void histogramaAcumulativo() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -469,14 +529,32 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   * M&eacute;todo setter
+   * Cambia el atributo focus.
+   *
+   * @param vI valor nuevo de focus
+   */
   public void setFocus(VentanaImagen vI) {
     this.imagenFocus = vI;
   }
   
+  /**
+   * M&eacute;todo setter
+   * Cambia el atributo cantidad imagenes.
+   *
+   * @param valor valor nuevo de cantidad imagenes
+   */
   public void setCantidadImagenes(int valor) {
     this.cantidadImagenes = valor;
   }
   
+  /**
+   * M&eacute;todo Getter.
+   * Retorna el atributo cantidad imagenes.
+   *
+   * @return cantidad imagenes
+   */
   public int getCantidadImagenes() {
     return this.cantidadImagenes;
   }

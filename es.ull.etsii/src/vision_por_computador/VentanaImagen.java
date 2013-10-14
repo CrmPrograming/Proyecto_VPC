@@ -10,10 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -22,6 +20,7 @@ import javax.swing.event.InternalFrameEvent;
 
 import org.jfree.ui.RefineryUtilities;
 
+@SuppressWarnings("serial")
 public class VentanaImagen extends JInternalFrame {
   
   private BufferedImage bufferImagen;
@@ -37,6 +36,18 @@ public class VentanaImagen extends JInternalFrame {
   private int valorMax;
   private int[] nivelGris; 
   
+  /**
+   * Instancia un nuevo objeto
+   * de tipo ventana imagen.
+   *
+   * @param idVentana the id ventana
+   * @param bImage the b image
+   * @param nombreImagen the nombre imagen
+   * @param debg the debg
+   * @param listaImagenes the lista imagenes
+   * @param pPrincipal the principal
+   * @param path the path
+   */
   public VentanaImagen(int idVentana, BufferedImage bImage, String nombreImagen, VentanaDebug debg, ArrayList<VentanaImagen> listaImagenes, PanelPrincipal pPrincipal, String path) {
     super("Imagen " + idVentana + ": " + nombreImagen,
         false, //resizable
@@ -87,6 +98,10 @@ public class VentanaImagen extends JInternalFrame {
     private final int DELAY = 100;
     private JPanel panelG;
     
+    /**
+     * Instancia un nuevo objeto
+     * de tipo panel imagen.
+     */
     public PanelImagen() {
       super(new FlowLayout());
       this.panelG = this;
@@ -151,6 +166,11 @@ public class VentanaImagen extends JInternalFrame {
       });
     }
     
+    /**
+     * Paint component.
+     *
+     * @param g the g
+     */
     @Override
     protected void paintComponent(Graphics g) {
       super.paintComponent(g);
@@ -159,10 +179,20 @@ public class VentanaImagen extends JInternalFrame {
       dibujarInformacion(g);
     }
     
+    /**
+     * Dibujar imagen.
+     *
+     * @param g the g
+     */
     private void dibujarImagen(Graphics g) {
       g.drawImage(bufferImagen, 0, 0, null);
     }
     
+    /**
+     * Dibujar rectangulo.
+     *
+     * @param g the g
+     */
     private void dibujarRectangulo(Graphics g) {
       if (this.marcado) {
         Color aux = g.getColor();
@@ -172,6 +202,11 @@ public class VentanaImagen extends JInternalFrame {
       }
     }
     
+    /**
+     * Dibujar informacion.
+     *
+     * @param g the g
+     */
     private void dibujarInformacion(Graphics g) {
       Color aux = g.getColor();
       Font fm = g.getFont();
@@ -199,6 +234,11 @@ public class VentanaImagen extends JInternalFrame {
     
     private class TimerListener implements ActionListener {
 
+      /**
+       * Action performed.
+       *
+       * @param arg0 the arg0
+       */
       @Override
       public void actionPerformed(ActionEvent arg0) {
         panelG.repaint();
@@ -208,6 +248,9 @@ public class VentanaImagen extends JInternalFrame {
     
   }
   
+  /**
+   * Calcular niveles.
+   */
   private void calcularNiveles() {
     this.nivelGris = new int[256];
     this.valorMin = Integer.MAX_VALUE;
@@ -230,6 +273,11 @@ public class VentanaImagen extends JInternalFrame {
     }
   }
   
+  /**
+   * Dibujar histograma absoluto.
+   *
+   * @param title the title
+   */
   public void dibujarHistogramaAbsoluto(String title) {
     HistogramaAbsoluto histo = new HistogramaAbsoluto(title, this.nivelGris);    
     histo.pack();
@@ -237,6 +285,11 @@ public class VentanaImagen extends JInternalFrame {
     histo.setVisible(true);
   }
   
+  /**
+   * Dibujar histograma acumulativo.
+   *
+   * @param title the title
+   */
   public void dibujarHistogramaAcumulativo(String title) {
     HistogramaAcumulativo histo = new HistogramaAcumulativo(title, this.nivelGris);    
     histo.pack();
@@ -244,30 +297,70 @@ public class VentanaImagen extends JInternalFrame {
     histo.setVisible(true);
   }
   
+  /**
+   * M&eacute;todo setter
+   * Cambia el atributo id.
+   *
+   * @param idVentana valor nuevo de id
+   */
   public void setID(int idVentana) {
     this.id = idVentana;
   }
   
+  /**
+   * M&eacute;todo Getter.
+   * Retorna el atributo id.
+   *
+   * @return id
+   */
   public int getID() {
     return this.id;
   }
   
+  /**
+   * M&eacute;todo Getter.
+   * Retorna el atributo nombre.
+   *
+   * @return nombre
+   */
   public String getNombre() {
     return this.nombre;
   }
   
+  /**
+   * M&eacute;todo Getter.
+   * Retorna el atributo imagen.
+   *
+   * @return imagen
+   */
   public BufferedImage getImagen() {
     return this.bufferImagen;
   }
   
+  /**
+   * M&eacute;todo Getter.
+   * Retorna el atributo ruta.
+   *
+   * @return ruta
+   */
   public String getRuta() {
     return this.ruta;
   }
   
+  /**
+   * Es gris.
+   *
+   * @return true, si verdadero
+   */
   public boolean esGris() {
     return this.escalaGris;
   }
   
+  /**
+   * Fijar gris.
+   *
+   * @param gris the gris
+   */
   public void fijarGris(boolean gris) {
     this.escalaGris = gris;
     if (gris) {
@@ -275,10 +368,22 @@ public class VentanaImagen extends JInternalFrame {
     }
   }
 
+  /**
+   * M&eacute;todo Getter.
+   * Retorna el atributo valor min.
+   *
+   * @return valor min
+   */
   public int getValorMin() {
     return (valorMin);
   }
 
+  /**
+   * M&eacute;todo Getter.
+   * Retorna el atributo valor max.
+   *
+   * @return valor max
+   */
   public int getValorMax() {
     return (valorMax);
   } 

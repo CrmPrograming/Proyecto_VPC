@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class VentanaOpciones extends JFrame implements ActionListener {
   
   private final int ANCHO = 300;
@@ -23,6 +24,10 @@ public class VentanaOpciones extends JFrame implements ActionListener {
   private final int N_FILAS = 0;
   private final int N_COLUMNAS = 2;  
   private final String[] LISTA_IDIOMAS = new String[] {"Español", "English"};
+  
+  /**
+   * The fichero.
+   */
   private String fichero;
   private JPanel panelOpciones;
   private JPanel panelBotones;
@@ -34,6 +39,13 @@ public class VentanaOpciones extends JFrame implements ActionListener {
   private JComboBox<String> boxConsola;
   private String[] idioma;
 
+  /**
+   * Instancia un nuevo objeto
+   * de tipo ventana opciones.
+   *
+   * @param idioma the idioma
+   * @param FICHERO the fichero
+   */
   public VentanaOpciones(String[] idioma, final String FICHERO) {
     super(idioma[3]);
     this.setLocationRelativeTo(null);
@@ -69,6 +81,11 @@ public class VentanaOpciones extends JFrame implements ActionListener {
     this.setVisible(true);
   }
 
+  /**
+   * Action performed.
+   *
+   * @param arg0 the arg0
+   */
   @Override
   public void actionPerformed(ActionEvent arg0) {
     if ("aceptar".equals(arg0.getActionCommand())) {
@@ -81,6 +98,9 @@ public class VentanaOpciones extends JFrame implements ActionListener {
     }    
   }
   
+  /**
+   * Mostrar mensaje cambios.
+   */
   private void mostrarMensajeCambios() {
     JOptionPane.showMessageDialog(this,
         this.idioma[19],
@@ -88,6 +108,9 @@ public class VentanaOpciones extends JFrame implements ActionListener {
         JOptionPane.INFORMATION_MESSAGE);
   }
   
+  /**
+   * Guardar cambios.
+   */
   private void guardarCambios() {
     try {
       BufferedWriter bEscritura = new BufferedWriter(new FileWriter(this.fichero));

@@ -1,9 +1,10 @@
 package vision_por_computador;
 
-import java.util.HashMap;
-
 public interface Idiomas {
   
+  /**
+   * Array para idioma español.
+   */
   final String[] I_ESPANOL = new String[] {
       // Categorias
       // 0          1               2           3           4
@@ -29,6 +30,9 @@ public interface Idiomas {
     "Operación sólo para imágenes en escala de grices"
   };
   
+  /**
+   * Array para idioma inglés.
+   */  
   final String[] I_ENGLISH = new String[] {
     // Categorias
     // 0          1            2            3         4
