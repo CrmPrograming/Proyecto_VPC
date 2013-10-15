@@ -12,12 +12,18 @@ import javax.swing.JTextArea;
 @SuppressWarnings("serial")
 public class VentanaDebug extends JFrame {
   
+  /**
+   *  JTextArea donde se muestran los mensajes de log
+   */
   private JTextArea log;
+  /**
+   *  JPanel donde se incluye el log
+   */
   private JPanel panel;
   
   /**
    * Instancia un nuevo objeto
-   * de tipo ventana debug.
+   * de tipo VentanaDebug.
    */
   public VentanaDebug() {
     super("Console Log");
@@ -46,18 +52,19 @@ public class VentanaDebug extends JFrame {
   }
   
   /**
-   * Mostrar debug.
+   * Muestra/Oculta la ventana debug
    *
-   * @param visible the visible
+   * @param visible Valor booleano correspondiente a mostrar/ocultar ventana
    */
   public void mostrarDebug(boolean visible) {
     this.setVisible(visible);
   }
   
   /**
-   * Escribir mensaje.
+   * Escribe el mensaje dado por par&aacute;metro
+   * en el log
    *
-   * @param mensaje the mensaje
+   * @param mensaje Mensaje a escribir
    */
   public void escribirMensaje(String mensaje) {
     this.log.append(mensaje + "\n");
@@ -65,9 +72,10 @@ public class VentanaDebug extends JFrame {
   }
   
   /**
-   * Estado visible.
+   * M&eacute;todo encargado de indicar si
+   * la ventana est&aacute; visible o no
    *
-   * @return true, si verdadero
+   * @return true, si la ventana est&aacute; visible
    */
   public boolean estadoVisible() {
     return this.isVisible();

@@ -35,21 +35,55 @@ import com.sun.media.jai.codec.TIFFEncodeParam;
 @SuppressWarnings("serial")
 public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   
+  /**
+   * Constante con el nombre de la aplicaci&oacute;n
+   */
   private final static String TITULO_APLICACION = "Sin nombre";
+  /**
+   * Constante con el nombre del fichero con la configuraci&oacute;n
+   */
   private final String FICHERO_CONFIG = "config.txt";
+  /**
+   * Constante con la versi&oacute;n del programa
+   */
   private final String VERSION = "vr 0.1.0";
+  /**
+   * Constante con el nombre del formato por defecto de las im&aacute;genes
+   */
   private final String FORMATO_FICHERO = "tif";
+  /**
+   * Array constante con el nombre de los autores
+   */
   private final String[] AUTORES = new String[] {"Noel Díaz Mesa" , "César Ravelo Martínez"};
+  /**
+   * JDesktopPane principal del programa sobre el cual
+   * se abrir&aacute;n las im&aacute;genes
+   */
   private JDesktopPane panelEscritorio;
+  /**
+   * Array con las cadenas del idioma actual
+   */
   private String[] idioma;
+  /**
+   * Instanciaci&oacute;n de la ventana debug del programa
+   */
   private VentanaDebug debug;
+  /**
+   * Lista de im&aacute;genes abiertas actualmente
+   */
   private ArrayList<VentanaImagen> listaImagenes;
+  /**
+   * Cantidad de im&aacute;genes abiertas
+   */
   private int cantidadImagenes = 0;
+  /**
+   * Im&aacute;gen actual en foco
+   */
   private VentanaImagen imagenFocus;
 
   /**
    * Instancia un nuevo objeto
-   * de tipo panel principal.
+   * de tipo PanelPrincipal.
    */
   public PanelPrincipal() {
     super(TITULO_APLICACION);
@@ -70,9 +104,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Crear menu.
+   * Establece el men&uacute; en la barra principal
    *
-   * @return j menu bar
+   * @return JMenuBar
    */
   private JMenuBar crearMenu() {
     JMenuBar barraMenu = new JMenuBar();
@@ -198,8 +232,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }  
   
   /**
-   * Cargar configuracion.
+   * Carga la configuraci&oacute;n del
+   * programa del fichero definido en la constante
+   * FICHERO_CONFIG
+   * 
+   * <p><b>Anotaciones</b></p>
+   * Formatear mejor la estructura del fichero
    */
+  @Anotaciones(desc = "Formatear mejor la estructura del fichero")
   private void cargarConfiguracion() {
     try {
       BufferedReader bLectura = new BufferedReader(new FileReader(FICHERO_CONFIG));
@@ -232,9 +272,11 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Action performed.
+   * Sobreescritura del m&eacute;todo  "actionPerformed"
+   * para realizar las operaciones del bot&oacute;n 
+   * seleccionado
    *
-   * @param arg0 the arg0
+   * @param arg0 Evento disparado
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
@@ -280,8 +322,15 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Cargar imagen.
+   * M&eacute;todo encargado de 
+   * buscar la imagen en disco y luego
+   * abrirla en una VentanaImagen
+   * 
+   * <p><b>Anotaciones</b></p>
+   * Cambiar el JFileChooser para que muestre una miniatura de la imagen
+   * @see VentanaImagen
    */
+  @Anotaciones(desc = "Cambiar el JFileChooser para que muestre una miniatura de la imagen")
   private void cargarImagen() {
     boolean seguir = false;
     JFileChooser fc = null;
@@ -326,11 +375,12 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Construir imagen.
+   * M&eacute;todo encargado de extraer
+   * la imagen desde fichero
    *
-   * @param selectedFile the selected file
-   * @return buffered image
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @param selectedFile Fichero de la imagen
+   * @return buffered Imagen en memoria
+   * @throws IOException Se&ntilde;al de que se ha producido una excepci&oacute;n de tipo I/O
    */
   private BufferedImage construirImagen(File selectedFile) throws IOException {
     FileSeekableStream stream = new FileSeekableStream(selectedFile.getAbsolutePath());
@@ -344,9 +394,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
 
   /**
-   * Mostrar error.
+   * M&eacute;todo encargado de mostrar
+   * una ventana con el error producido
    *
-   * @param idError the id error
+   * @param idError Identificador del error
    */
   private void mostrarError(int idError) {
     JFrame.setDefaultLookAndFeelDecorated(false);
@@ -358,14 +409,15 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Cerrar.
+   * M&eacute;todo encargado de cerrar la aplicaci&oacute;n
    */
   private void cerrar() {
     System.exit(0);    
   }
   
   /**
-   * Mostrar acerca de.
+   * M&eacute;todo encargado de mostrar
+   * la ventana "Acerca de"
    */
   private void mostrarAcercaDe() {
     JFrame.setDefaultLookAndFeelDecorated(false);
@@ -377,7 +429,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Duplicar imagen.
+   * M&eacute;todo encargado de duplicar la imagen
+   * en foco creando una nueva ventana con la misma
+   * imagen
    */
   private void duplicarImagen() {
     if (this.imagenFocus == null) {
@@ -403,7 +457,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Guardar imagen.
+   * M&eacute;todo encargado de guardar
+   * la imagen en el fichero con el mismo nombre
+   * de la im&aacute;gen y en su ruta 
    */
   private void guardarImagen() {
     if (this.imagenFocus == null) {
@@ -417,7 +473,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Guardar imagen como.
+   * M&eacute;todo encargado de preguntar
+   * al usuario c&oacute;mo quiere guardar la 
+   * imagen y en d&oacute;nde
    */
   private void guardarImagenComo() {
     if (this.imagenFocus == null) {
@@ -445,10 +503,13 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Cambiar imagen gris.
-   * <b>Nota:</b> revisar transformación de color a gris
+   * M&eacute;todo encargado de cambiar la imagen 
+   * a escala de gris 
    * 
+   * <p><b>Anotaciones</b></p>
+   * Revisar transformaci&oacute;n de color a gris
    */
+  @Anotaciones(desc = "Revisar transformación de color a gris")
   private void cambiarImagenGris() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -479,8 +540,13 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Mostrar informacion.
+   * M&eacute;todo encargado de mostrar la informaci&oacute;n
+   * correspondiente a la imagen en foco
+   * 
+   * <p><b>Anotaciones</b></p>
+   * Falta a&ntilde;adir la informaci&oacute;n de brillo y contraste
    */
+  @Anotaciones(desc = "Falta añadir la información de brillo y contraste")
   private void mostrarInformacion() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -504,7 +570,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Histograma absoluto.
+   * M&eacute;todo encargado de mostrar el
+   * histograma absoluto de la imagen en foco
    */
   private void histogramaAbsoluto() {
     if (this.imagenFocus == null) {
@@ -517,7 +584,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * Histograma acumulativo.
+   * M&eacute;todo encargado de mostrar el histograma
+   * acumulativo de la imagen en foco
    */
   private void histogramaAcumulativo() {
     if (this.imagenFocus == null) {
@@ -530,30 +598,30 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   }
   
   /**
-   * M&eacute;todo setter
-   * Cambia el atributo focus.
+   * M&eacute;todo setter para cambiar 
+   * la imagen en foco
    *
-   * @param vI valor nuevo de focus
+   * @param vI Nueva imagen en foco
    */
   public void setFocus(VentanaImagen vI) {
     this.imagenFocus = vI;
   }
   
   /**
-   * M&eacute;todo setter
-   * Cambia el atributo cantidad imagenes.
+   * M&eacute;todo setter para cambiar
+   * la cantidad de im&aacute;genes abiertas
    *
-   * @param valor valor nuevo de cantidad imagenes
+   * @param valor Nueva cantidad de im&aacute;genes
    */
   public void setCantidadImagenes(int valor) {
     this.cantidadImagenes = valor;
   }
   
   /**
-   * M&eacute;todo Getter.
-   * Retorna el atributo cantidad imagenes.
+   * M&eacute;todo Getter para retornar
+   * la cantidad de im&aacute;genes abiertas
    *
-   * @return cantidad imagenes
+   * @return cantidadImagenes
    */
   public int getCantidadImagenes() {
     return this.cantidadImagenes;

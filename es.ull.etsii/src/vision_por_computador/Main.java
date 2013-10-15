@@ -5,9 +5,9 @@ import javax.swing.JFrame;
 public class Main {
 
   /**
-   * M&eacute;todo main.
+   * M&eacute;todo main de la aplicaci&oacute;n
    *
-   * @param args como argumento
+   * @param args Par&aacute;metros del programa
    */
   public static void main(String[] args) {
     JFrame.setDefaultLookAndFeelDecorated(true);
