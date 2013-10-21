@@ -1,2 +1,2 @@
-0
-0
+idioma=0
+debug=0

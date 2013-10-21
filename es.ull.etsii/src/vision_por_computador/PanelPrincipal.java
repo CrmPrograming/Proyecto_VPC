@@ -26,7 +26,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import com.sun.media.jai.codec.FileSeekableStream;
 import com.sun.media.jai.codec.TIFFDecodeParam;
 import com.sun.media.jai.codec.TIFFEncodeParam;
@@ -235,14 +234,12 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    * programa del fichero definido en la constante
    * FICHERO_CONFIG
    * 
-   * <p><b>Anotaciones</b></p>
-   * Formatear mejor la estructura del fichero
    */
-  @Anotaciones(desc = "Formatear mejor la estructura del fichero")
   private void cargarConfiguracion() {
     try {
+      final String SEPARADOR = "=";
       BufferedReader bLectura = new BufferedReader(new FileReader(FICHERO_CONFIG));
-      int idiom = Integer.valueOf(bLectura.readLine()).intValue();
+      int idiom = Integer.valueOf(bLectura.readLine().split(SEPARADOR)[1]).intValue();
       switch (idiom) {
         case 1:
           this.idioma = Idiomas.I_ENGLISH;
@@ -251,7 +248,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
         default:
           this.idioma = Idiomas.I_ESPANOL;          
       }
-      if ((Integer.valueOf(bLectura.readLine()).intValue()) == 1) {
+      if ((Integer.valueOf(bLectura.readLine().split(SEPARADOR)[1]).intValue()) == 1) {
         this.debug.mostrarDebug(true);
       }
       bLectura.close();

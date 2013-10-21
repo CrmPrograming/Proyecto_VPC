@@ -20,7 +20,7 @@ public interface Idiomas {
     "Acerca de",
       // Mensajes menús
       // 16                     17        18                            19
-    "Imagenes tif (*.tif)", "Aceptar", "Cancelar", "Los cambios tendrán lugar tras reiniciar el programa",
+    "Imagenes tif (*.tif)", "Aceptar", "Cancelar", "Algunos cambios tendrán lugar tras reiniciar el programa",
       // 20
     "Autores",
       // Errores
@@ -48,7 +48,7 @@ public interface Idiomas {
     "About",
     // Mensajes menús
     // 16                   17      18                       19
-    "Tiff images (*.tif)", "Ok", "Cancel", "The changes will take place after restarting the program",
+    "Tiff images (*.tif)", "Ok", "Cancel", "Some changes will take place after restarting the program",
     // 20
     "Developed by",
     // Errores

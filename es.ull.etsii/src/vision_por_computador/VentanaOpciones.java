@@ -156,15 +156,12 @@ public class VentanaOpciones extends JFrame implements ActionListener {
    * M&eacute;todo encargado de almacenar los
    * cambios en el fichero de opciones
    * 
-   * <p><b>Anotaciones</b></p>
-   * Implementar m&eacute;todo con hilos
    */
-  @Anotaciones(desc = "Formatear mejor la estructura del fichero")
   private void guardarCambios() {
     try {
       BufferedWriter bEscritura = new BufferedWriter(new FileWriter(this.fichero));
-      bEscritura.write(String.valueOf(this.boxIdiomas.getSelectedIndex()) + "\n");
-      bEscritura.write(String.valueOf(this.boxConsola.getSelectedIndex()));  
+      bEscritura.write("idioma=" + String.valueOf(this.boxIdiomas.getSelectedIndex()) + "\n");
+      bEscritura.write("debug=" + String.valueOf(this.boxConsola.getSelectedIndex()));  
       bEscritura.close();
     } catch (IOException e) {
       // TODO Auto-generated catch block
