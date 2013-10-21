@@ -1,6 +1,7 @@
 package vision_por_computador;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,11 +11,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 public class VentanaOpciones extends JFrame implements ActionListener {
@@ -78,6 +83,9 @@ public class VentanaOpciones extends JFrame implements ActionListener {
    */
   private JComboBox<String> boxConsola;
   private String[] idioma;
+  private PanelPrincipal pPrincipal;
+  private JLabel lColor;
+  private JButton bColor;
 
   /**
    * Instancia un nuevo objeto
@@ -86,14 +94,20 @@ public class VentanaOpciones extends JFrame implements ActionListener {
    * @param idioma Array con las cadenas en el idioma actual
    * @param FICHERO String con el nombre del fichero de opciones
    */
-  public VentanaOpciones(String[] idioma, final String FICHERO) {
+  public VentanaOpciones(String[] idioma, final String FICHERO, PanelPrincipal pIni) {
     super(idioma[3]);
     this.setLocationRelativeTo(null);
     JPanel panelPrincipal = new JPanel(new BorderLayout());
     this.idioma = idioma;
     this.fichero = FICHERO;
+    this.pPrincipal = pIni;
     this.panelBotones = new JPanel(new FlowLayout());
     this.panelOpciones = new JPanel(new GridLayout(N_FILAS, N_COLUMNAS));
+    this.lColor = new JLabel("Color Interfaz");
+    this.bColor = new JButton();
+    this.bColor.setActionCommand("cambiarColor");
+    this.bColor.addActionListener(this);
+    this.bColor.setBackground(pIni.getElemColor());
     this.botonAceptar = new JButton(idioma[17]);
     this.botonAceptar.setActionCommand("aceptar");
     this.botonAceptar.addActionListener(this);
@@ -110,9 +124,11 @@ public class VentanaOpciones extends JFrame implements ActionListener {
     this.boxConsola.setSelectedIndex(0);
     this.lConsola = new JLabel("Debug por defecto ");
     this.panelOpciones.add(this.lIdioma);
-    this.panelOpciones.add(this.boxIdiomas);
+    this.panelOpciones.add(this.boxIdiomas);        
     this.panelOpciones.add(this.lConsola);
     this.panelOpciones.add(this.boxConsola);
+    this.panelOpciones.add(this.lColor);
+    this.panelOpciones.add(this.bColor);    
     JPanel aux = new JPanel(new FlowLayout());
     aux.add(this.panelOpciones);
     panelPrincipal.add(aux, BorderLayout.CENTER);
@@ -138,6 +154,11 @@ public class VentanaOpciones extends JFrame implements ActionListener {
     if ("cancelar".equals(arg0.getActionCommand())) {
       this.dispose();
     }    
+    if("cambiarColor".equals(arg0.getActionCommand())) {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      new PanelColores();
+      JFrame.setDefaultLookAndFeelDecorated(true);
+    }
   }
   
   /**
@@ -161,12 +182,44 @@ public class VentanaOpciones extends JFrame implements ActionListener {
     try {
       BufferedWriter bEscritura = new BufferedWriter(new FileWriter(this.fichero));
       bEscritura.write("idioma=" + String.valueOf(this.boxIdiomas.getSelectedIndex()) + "\n");
+      Color auxColor = this.pPrincipal.getElemColor();
+      bEscritura.write("color=" + auxColor.getRed() + "," + auxColor.getGreen() + "," + auxColor.getBlue() + "\n");
       bEscritura.write("debug=" + String.valueOf(this.boxConsola.getSelectedIndex()));  
       bEscritura.close();
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+  } 
+  
+  private class PanelColores extends JFrame implements ChangeListener {
+
+    private JColorChooser colorC;
+    
+    public PanelColores() {
+      super("Paleta de Colores");
+      JPanel panelContenido = new JPanel(new BorderLayout());
+      this.colorC = new JColorChooser(pPrincipal.getElemColor());
+      this.colorC.getSelectionModel().addChangeListener(this);
+      this.colorC.setPreviewPanel(new JPanel());
+      for (AbstractColorChooserPanel aux: this.colorC.getChooserPanels()) {
+        if (!aux.getDisplayName().equals("RGB")) {
+          this.colorC.removeChooserPanel(aux);
+        }
+      }
+      panelContenido.add(this.colorC, BorderLayout.CENTER);
+      this.setContentPane(panelContenido);
+      this.pack();
+      this.setVisible(true);
+      this.setLocationRelativeTo(null);
+    }
+    
+    @Override
+    public void stateChanged(ChangeEvent e) {
+      pPrincipal.setElemColor(this.colorC.getColor());
+      bColor.setBackground(this.colorC.getColor());
+    }
+    
   }
 
 }

@@ -24,7 +24,7 @@ public class VistaPrevia extends JComponent implements PropertyChangeListener {
   private File file = null;
   
   public VistaPrevia(JFileChooser fc) {
-    this.setPreferredSize(new Dimension(100, 50));
+    this.setPreferredSize(new Dimension(200, 100));
     fc.addPropertyChangeListener(this);
   }
   
@@ -44,8 +44,8 @@ public class VistaPrevia extends JComponent implements PropertyChangeListener {
     
     ImageIcon tmpIcon = new ImageIcon(img);
     if (tmpIcon != null) {
-      if (tmpIcon.getIconWidth() > 90) {
-        thumbnail = new ImageIcon(tmpIcon.getImage().getScaledInstance(90, -1, Image.SCALE_DEFAULT));
+      if (tmpIcon.getIconWidth() > 180) {
+        thumbnail = new ImageIcon(tmpIcon.getImage().getScaledInstance(180, -1, Image.SCALE_DEFAULT));
       } else {
         thumbnail = tmpIcon;
       }

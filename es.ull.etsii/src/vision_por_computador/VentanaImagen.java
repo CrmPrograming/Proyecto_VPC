@@ -305,7 +305,7 @@ public class VentanaImagen extends JInternalFrame {
     private void dibujarRectangulo(Graphics g) {
       if (this.marcado) {
         Color aux = g.getColor();
-        g.setColor(Color.RED);
+        g.setColor(panelPrincipal.getElemColor());
         g.drawRect(this.posX, this.posY, this.posXActual - this.posX, this.posYActual - this.posY);
         g.setColor(aux);
       }
@@ -328,7 +328,7 @@ public class VentanaImagen extends JInternalFrame {
       int red = color.getRed();
       int green = color.getGreen();
       int blue = color.getBlue();
-      g.setColor(Color.RED);
+      g.setColor(panelPrincipal.getElemColor());
       String coordenadas = "(" + this.posXActual + ", " + this.posYActual + ", " 
                             + "R: " + red + ", G: " + green + ", B: " + blue + ")";
       if (this.posXActual < this.getWidth() / 2) {

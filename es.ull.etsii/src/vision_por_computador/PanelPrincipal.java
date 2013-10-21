@@ -1,5 +1,6 @@
 package vision_por_computador;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -15,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.swing.JDesktopPane;
@@ -26,6 +28,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import com.sun.media.jai.codec.FileSeekableStream;
 import com.sun.media.jai.codec.TIFFDecodeParam;
 import com.sun.media.jai.codec.TIFFEncodeParam;
@@ -78,6 +81,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    * Im&aacute;gen actual en foco
    */
   private VentanaImagen imagenFocus;
+  
+  private Color colorElementos;
 
   /**
    * Instancia un nuevo objeto
@@ -248,22 +253,41 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
         default:
           this.idioma = Idiomas.I_ESPANOL;          
       }
+      String lineaColores = bLectura.readLine().split(SEPARADOR)[1];      
+      int r = Integer.valueOf(lineaColores.split(",")[0]).intValue();
+      int g = Integer.valueOf(lineaColores.split(",")[1]).intValue();
+      int b = Integer.valueOf(lineaColores.split(",")[2]).intValue();
+      comprobarColores(r, g, b);
+      this.colorElementos = new Color(r, g, b);
       if ((Integer.valueOf(bLectura.readLine().split(SEPARADOR)[1]).intValue()) == 1) {
         this.debug.mostrarDebug(true);
-      }
+      }      
       bLectura.close();
     } catch (Exception e) {
       System.err.println("> Fichero de configuración no encontrado o no válido. Creando nuevo fichero:");
       try {
         BufferedWriter bEscritura = new BufferedWriter(new FileWriter(FICHERO_CONFIG));
-        bEscritura.write("0\n");
-        bEscritura.write("0");
+        bEscritura.write("idioma=0\n");
+        bEscritura.write("color=255,0,0\n");
+        bEscritura.write("debug=0");
         this.idioma = Idiomas.I_ESPANOL;
         bEscritura.close();
       } catch (IOException e1) {
         // TODO Auto-generated catch block
         e1.printStackTrace();
       }
+    }
+  }
+  
+  private void comprobarColores(int r, int g, int b) throws Exception {
+    if ((r > 255) || (r < 0)) {
+      throw new Exception();
+    }
+    if ((g > 255) || (g < 0)) {
+      throw new Exception();
+    }
+    if ((b > 255) || (b < 0)) {
+      throw new Exception();
     }
   }
   
@@ -285,7 +309,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }    
     if ("opciones".equals(arg0.getActionCommand())) {
       JFrame.setDefaultLookAndFeelDecorated(false);
-      new VentanaOpciones(this.idioma, FICHERO_CONFIG);
+      new VentanaOpciones(this.idioma, FICHERO_CONFIG, this);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
     if ("duplicar".equals(arg0.getActionCommand())) {
@@ -331,9 +355,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     boolean seguir = false;
     JFileChooser fc = null;
     do {
-      fc = new JFileChooser();    
+      fc = new JFileChooser(); 
+      fc.setPreferredSize(new Dimension(800, 600));
       fc.setAccessory(new VistaPrevia(fc));
-      FileNameExtensionFilter tiffFilter = new FileNameExtensionFilter(this.idioma[15], FORMATO_FICHERO);
+      FileNameExtensionFilter tiffFilter = new FileNameExtensionFilter(this.idioma[16], FORMATO_FICHERO);
       fc.setFileFilter(tiffFilter);
       fc.setDialogTitle(this.idioma[5]);
       int returnVal = fc.showOpenDialog(this);
@@ -622,6 +647,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    */
   public int getCantidadImagenes() {
     return this.cantidadImagenes;
+  }
+  
+  public Color getElemColor() {
+    return this.colorElementos;
+  }
+  
+  public void setElemColor(Color nColor) {
+    this.colorElementos = nColor;
   }
 
 }
