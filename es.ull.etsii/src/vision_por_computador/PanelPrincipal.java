@@ -15,7 +15,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.swing.JDesktopPane;
@@ -336,6 +335,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     JFileChooser fc = null;
     do {
       fc = new JFileChooser();    
+      fc.setAccessory(new VistaPrevia(fc));
       FileNameExtensionFilter tiffFilter = new FileNameExtensionFilter(this.idioma[15], FORMATO_FICHERO);
       fc.setFileFilter(tiffFilter);
       fc.setDialogTitle(this.idioma[5]);
@@ -509,7 +509,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    * <p><b>Anotaciones</b></p>
    * Revisar transformaci&oacute;n de color a gris
    */
-  @Anotaciones(desc = "Revisar transformación de color a gris")
+  @Anotaciones(desc = "Revisar transformación de color a gris")  
   private void cambiarImagenGris() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -538,7 +538,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.imagenFocus = aux;
     }
   }
-  
+    
   /**
    * M&eacute;todo encargado de mostrar la informaci&oacute;n
    * correspondiente a la imagen en foco
