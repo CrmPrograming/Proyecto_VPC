@@ -1,5 +1,6 @@
 package vision_por_computador;
 
+@Anotaciones(desc = "Cambiar el Array por una tabla Hash")
 public interface Idiomas {
   
   /**

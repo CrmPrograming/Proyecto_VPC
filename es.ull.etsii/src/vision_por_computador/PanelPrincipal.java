@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.swing.JDesktopPane;
@@ -73,6 +72,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    * Lista de im&aacute;genes abiertas actualmente
    */
   private ArrayList<VentanaImagen> listaImagenes;
+  
   /**
    * Cantidad de im&aacute;genes abiertas
    */
@@ -100,8 +100,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     this.setBounds(inset, inset, screenSize.width  - inset * 2, screenSize.height - inset*2);
     this.panelEscritorio = new JDesktopPane();
     this.setContentPane(this.panelEscritorio);
-    this.setJMenuBar(crearMenu());    
-    this.setJMenuBar(crearMenu());
+    this.setJMenuBar(crearMenu()); 
     this.panelEscritorio.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
     this.setVisible(true);
   }
@@ -346,11 +345,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    * buscar la imagen en disco y luego
    * abrirla en una VentanaImagen
    * 
-   * <p><b>Anotaciones</b></p>
-   * Cambiar el JFileChooser para que muestre una miniatura de la imagen
    * @see VentanaImagen
    */
-  @Anotaciones(desc = "Cambiar el JFileChooser para que muestre una miniatura de la imagen")
   private void cargarImagen() {
     boolean seguir = false;
     JFileChooser fc = null;

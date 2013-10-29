@@ -380,11 +380,11 @@ public class VentanaImagen extends JInternalFrame {
       for (int j = 0; j < this.bufferImagen.getHeight(); j++) {
         color = new Color(this.bufferImagen.getRGB(i, j));
         this.nivelGris[color.getRed()]++;
-        if (this.nivelGris[color.getRed()] > this.valorMax) {
-          this.valorMax = this.nivelGris[color.getRed()]; 
+        if (color.getRed() > this.valorMax) {
+          this.valorMax = color.getRed(); 
         }
-        if (this.nivelGris[color.getRed()] < this.valorMin) {
-          this.valorMin = this.nivelGris[color.getRed()];
+        if (color.getRed() < this.valorMin) {
+          this.valorMin = color.getRed();
         }
       }
     }
