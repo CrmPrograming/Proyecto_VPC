@@ -87,14 +87,18 @@ public class VentanaImagen extends JInternalFrame {
    * Instancia un nuevo objeto
    * de tipo VentanaImagen.
    *
+   * <p><b>Anotaciones</b></p>
+   * Revisar la forma de dimensionar la imagen en el constructor
+   *
    * @param idVentana Identificador de la ventana
    * @param bImage Imagen a mostrar en memoria
    * @param nombreImagen Nombre de la imagen
    * @param debg Instanciaci&oacute;n de la VentanaDebug
    * @param listaImagenes Lista de im&aacute;genes abiertas actualmente
    * @param pPrincipal Instanciaci&oacute;n del panel principal
-   * @param path Ruta de la imagen
+   * @param path Ruta de la imagen 
    */
+  @Anotaciones(desc = "Revisar la forma de dimensionar la imagen en el constructor")
   public VentanaImagen(int idVentana, BufferedImage bImage, String nombreImagen, VentanaDebug debg, ArrayList<VentanaImagen> listaImagenes, PanelPrincipal pPrincipal, String path) {
     super("Imagen " + idVentana + ": " + nombreImagen,
         false, //resizable
@@ -110,9 +114,7 @@ public class VentanaImagen extends JInternalFrame {
     this.escalaGris = false;
     this.valorMin = 0;
     this.valorMax = 0;
-    setSize(this.bufferImagen.getWidth(), this.bufferImagen.getHeight());
-    System.out.println("Tam: " + this.bufferImagen.getWidth() + ", " +this.bufferImagen.getHeight());
-    System.out.println(this.getSize());
+    setSize(this.bufferImagen.getWidth() + 10, this.bufferImagen.getHeight() + 33);   
     this.panelPrincipal = pPrincipal;
     this.panelImagen = new PanelImagen();
     setContentPane(this.panelImagen); 
