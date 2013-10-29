@@ -102,6 +102,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     this.setContentPane(this.panelEscritorio);
     this.setJMenuBar(crearMenu()); 
     this.panelEscritorio.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
+    this.panelEscritorio.setBackground(new Color(0x90CBC1));
     this.setVisible(true);
   }
   

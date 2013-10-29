@@ -110,7 +110,9 @@ public class VentanaImagen extends JInternalFrame {
     this.escalaGris = false;
     this.valorMin = 0;
     this.valorMax = 0;
-    setSize(this.bufferImagen.getWidth(), this.bufferImagen.getHeight());  
+    setSize(this.bufferImagen.getWidth(), this.bufferImagen.getHeight());
+    System.out.println("Tam: " + this.bufferImagen.getWidth() + ", " +this.bufferImagen.getHeight());
+    System.out.println(this.getSize());
     this.panelPrincipal = pPrincipal;
     this.panelImagen = new PanelImagen();
     setContentPane(this.panelImagen); 
@@ -220,18 +222,9 @@ public class VentanaImagen extends JInternalFrame {
             if (escalaGris) {
               BufferedImage subImagen = null;
               int ancho = posXActual - posX;
-              int alto = posYActual - posY;
-              subImagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_BYTE_GRAY);
-              int w = 0;
-              int h = 0;
-              for (int i = posX; i < posXActual; i++) {
-                for (int j = posY; j < posYActual; j++) {
-                  subImagen.setRGB(w, h, bufferImagen.getRGB(i, j));
-                  h++;
-                }
-                h = 0;
-                w++;
-              }            
+              int alto = posYActual - posY;   
+              System.out.println("Clipped: " + ancho + ", " + alto);
+              subImagen = bufferImagen.getSubimage(posX, posY, ancho, alto);
               String[] nombre = getNombre().split("." + "tif");
               String[] ruta = getRuta().split(getNombre());
               String nuevoNombre = nombre[0] + "_subimagen." + "tif"; 
