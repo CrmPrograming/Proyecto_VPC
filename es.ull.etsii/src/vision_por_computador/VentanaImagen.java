@@ -87,6 +87,7 @@ public class VentanaImagen extends JInternalFrame {
    */
   private double entropia = 0.0d;
   
+  private double brillo = 0.0d;
   /**
    * Instancia un nuevo objeto
    * de tipo VentanaImagen.
@@ -373,6 +374,7 @@ public class VentanaImagen extends JInternalFrame {
     this.valorMax = Integer.MIN_VALUE;
     Color color = null;
     int total = 0;
+    int sumatorio = 0;
     for (int i = 0; i < 256; i++) {
       this.nivelGris[i] = 0;
     }
@@ -380,7 +382,8 @@ public class VentanaImagen extends JInternalFrame {
     for (int i = 0; i < this.bufferImagen.getWidth(); i++) {
       for (int j = 0; j < this.bufferImagen.getHeight(); j++) {
         color = new Color(this.bufferImagen.getRGB(i, j));
-        this.nivelGris[color.getRed()]++;        
+        this.nivelGris[color.getRed()]++;
+        sumatorio += color.getRed();
         if (color.getRed() > this.valorMax) {
           this.valorMax = color.getRed(); 
         }
@@ -389,14 +392,15 @@ public class VentanaImagen extends JInternalFrame {
         }
       }
     } 
-    for (int i = 0; i < this.nivelGris.length; i++) {
+    // Entropía
+    for (int i = 0; i < this.nivelGris.length; i++) {      
       double prob = (double) this.nivelGris[i] / total;
-      System.out.println(this.nivelGris[i] + ", " + total);
-      System.out.println("Prob: " + prob);
       if (prob > 0.0d)
         this.entropia -= prob * Math.log(prob);
     }
     this.entropia = (this.entropia / Math.log(2.0d));
+    // Brillo y Contraste
+    this.brillo = sumatorio / total;
   }
   
   /**
@@ -521,6 +525,10 @@ public class VentanaImagen extends JInternalFrame {
   
   public double getEntropia() {
     return (this.entropia);
+  }
+  
+  public double getBrillo() {
+    return (this.brillo);
   }
 
 }
