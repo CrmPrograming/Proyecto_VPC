@@ -21,7 +21,7 @@ import javax.swing.event.InternalFrameEvent;
 import org.jfree.ui.RefineryUtilities;
 
 @SuppressWarnings("serial")
-public class VentanaImagen extends JInternalFrame {
+public class VentanaImagen extends JInternalFrame implements Runnable {
   
   /**
    * Imagen a mostrar almacenada en memoria
@@ -94,9 +94,6 @@ public class VentanaImagen extends JInternalFrame {
    * Instancia un nuevo objeto
    * de tipo VentanaImagen.
    *
-   * <p><b>Anotaciones</b></p>
-   * Revisar la forma de dimensionar la imagen en el constructor
-   *
    * @param idVentana Identificador de la ventana
    * @param bImage Imagen a mostrar en memoria
    * @param nombreImagen Nombre de la imagen
@@ -105,7 +102,6 @@ public class VentanaImagen extends JInternalFrame {
    * @param pPrincipal Instanciaci&oacute;n del panel principal
    * @param path Ruta de la imagen 
    */
-  @Anotaciones(desc = "Revisar la forma de dimensionar la imagen en el constructor")
   public VentanaImagen(int idVentana, BufferedImage bImage, String nombreImagen, VentanaDebug debg, ArrayList<VentanaImagen> listaImagenes, PanelPrincipal pPrincipal, String path) {
     super("Imagen " + idVentana + ": " + nombreImagen,
         false, //resizable
@@ -156,7 +152,11 @@ public class VentanaImagen extends JInternalFrame {
       }
       
     });
-  }  
+  }
+  
+  public void run() {
+    calcularNiveles();
+  }
 
   private class PanelImagen extends JPanel {
     
@@ -270,7 +270,7 @@ public class VentanaImagen extends JInternalFrame {
         }
         
       });
-    }
+    }    
     
     /**
      * Sobreescritura del m&eacute;todo "paintComponent"
@@ -365,11 +365,8 @@ public class VentanaImagen extends JInternalFrame {
    * M&eacute;todo encargado de calcular los niveles
    * de gris de la imagen
    * 
-   * <p><b>Anotaciones</b></p>
-   * Implementar m&eacute;todo con hilos
    */
-  @Anotaciones(desc = "Implementar método con hilos")
-  private void calcularNiveles() {
+  private synchronized void calcularNiveles() {
     this.nivelGris = new int[256];
     this.valorMin = Integer.MAX_VALUE;
     this.valorMax = Integer.MIN_VALUE;
@@ -511,7 +508,7 @@ public class VentanaImagen extends JInternalFrame {
   public void fijarGris(boolean gris) {
     this.escalaGris = gris;
     if (gris) {
-      calcularNiveles();
+      new Thread(this).start();
     }
   }
 
