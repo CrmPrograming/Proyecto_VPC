@@ -380,6 +380,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
             this.debug.escribirMensaje("> Se ha cargado la imagen " + fichero.getName());
             this.cantidadImagenes++;
             this.imagenFocus = aux;
+            if ((aux.getImagen().getType() == 0) || (aux.getImagen().getType() == BufferedImage.TYPE_INT_RGB)) {
+              aux.fijarGris(true);
+            }
           } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
