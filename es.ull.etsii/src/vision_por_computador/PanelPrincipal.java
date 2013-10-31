@@ -340,6 +340,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     if ("histogramaAcumulativo".equals(arg0.getActionCommand())) {
       histogramaAcumulativo();
     }
+    if ("entropia".equals(arg0.getActionCommand())) {
+      mostrarEntropia();
+    }
   }
   
   /**
@@ -624,6 +627,21 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       mostrarError(23);
     } else {
       this.imagenFocus.dibujarHistogramaAcumulativo(this.idioma[9]);
+    }
+  }
+  
+  private void mostrarEntropia() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()){
+      mostrarError(23);
+    } else {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      JOptionPane.showMessageDialog(this,
+          this.idioma[11] + ": " + this.imagenFocus.getEntropia(),
+          this.idioma[11],
+          JOptionPane.INFORMATION_MESSAGE);
+      JFrame.setDefaultLookAndFeelDecorated(true);
     }
   }
   
