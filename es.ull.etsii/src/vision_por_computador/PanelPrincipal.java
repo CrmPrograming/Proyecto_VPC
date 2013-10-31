@@ -1,5 +1,6 @@
 package vision_por_computador;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -7,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.swing.JDesktopPane;
@@ -525,20 +526,27 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    * M&eacute;todo encargado de cambiar la imagen 
    * a escala de gris 
    * 
-   * <p><b>Anotaciones</b></p>
-   * Revisar transformaci&oacute;n de color a gris
    */
-  @Anotaciones(desc = "Revisar transformación de color a gris")  
   private void cambiarImagenGris() {
     if (this.imagenFocus == null) {
       mostrarError(22);
     } else {
       BufferedImage imagenColor = this.imagenFocus.getImagen();
-      BufferedImage imagenGris = new BufferedImage(imagenColor.getWidth(), imagenColor.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-      ColorConvertOp op = new ColorConvertOp(imagenColor.getColorModel().getColorSpace(),
-                                             imagenGris.getColorModel().getColorSpace(), null);
-      op.filter(imagenColor, imagenGris);    
-      String[] nombre = this.imagenFocus.getNombre().split("." + FORMATO_FICHERO);
+      BufferedImage imagenGris = new BufferedImage(imagenColor.getWidth(), imagenColor.getHeight(), BufferedImage.TYPE_INT_RGB);
+      for (int i = 0; i < imagenGris.getWidth(); i++) {
+       for (int j = 0; j < imagenGris.getHeight(); j++) {
+         Color auxColor = new Color(imagenColor.getRGB(i, j));
+         int r = auxColor.getRed();
+         int b = auxColor.getBlue();
+         int g = auxColor.getGreen();
+         int nPixel = (int) (0.222 * r + 0.707 * g + 0.071 * b);
+         int result = nPixel << 16; // Red
+         result += nPixel << 8;     // Green
+         result += nPixel;          // Blue
+         imagenGris.setRGB(i, j, result);
+       }
+     }
+      String[] nombre = this.imagenFocus.getNombre().split("." + FORMATO_FICHERO);      
       String[] ruta = this.imagenFocus.getRuta().split(this.imagenFocus.getNombre());
       String nuevoNombre = nombre[0] + "_gris." + FORMATO_FICHERO; 
       String nuevaRuta = ruta[0] + nuevoNombre;
