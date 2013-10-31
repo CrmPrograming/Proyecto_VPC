@@ -88,6 +88,8 @@ public class VentanaImagen extends JInternalFrame {
   private double entropia = 0.0d;
   
   private double brillo = 0.0d;
+  
+  private double contraste = 0.0d;
   /**
    * Instancia un nuevo objeto
    * de tipo VentanaImagen.
@@ -230,7 +232,6 @@ public class VentanaImagen extends JInternalFrame {
               BufferedImage subImagen = null;
               int ancho = posXActual - posX;
               int alto = posYActual - posY;   
-              System.out.println("Clipped: " + ancho + ", " + alto);
               subImagen = bufferImagen.getSubimage(posX, posY, ancho, alto);
               String[] nombre = getNombre().split("." + "tif");
               String[] ruta = getRuta().split(getNombre());
@@ -375,6 +376,8 @@ public class VentanaImagen extends JInternalFrame {
     Color color = null;
     int total = 0;
     int sumatorio = 0;
+    double des = 0.0d;
+    double sumDesviacion = 0.0d;
     for (int i = 0; i < 256; i++) {
       this.nivelGris[i] = 0;
     }
@@ -383,7 +386,7 @@ public class VentanaImagen extends JInternalFrame {
       for (int j = 0; j < this.bufferImagen.getHeight(); j++) {
         color = new Color(this.bufferImagen.getRGB(i, j));
         this.nivelGris[color.getRed()]++;
-        sumatorio += color.getRed();
+        sumatorio += color.getRed();        
         if (color.getRed() > this.valorMax) {
           this.valorMax = color.getRed(); 
         }
@@ -401,6 +404,15 @@ public class VentanaImagen extends JInternalFrame {
     this.entropia = (this.entropia / Math.log(2.0d));
     // Brillo y Contraste
     this.brillo = sumatorio / total;
+    for (int i = 0; i < this.bufferImagen.getWidth(); i++) {
+      for (int j = 0; j < this.bufferImagen.getHeight(); j++) {
+        color = new Color(this.bufferImagen.getRGB(i, j));  
+        des = color.getRed() - this.brillo;        
+        sumDesviacion += Math.pow(des, 2);
+      }
+    } 
+    this.contraste = Math.sqrt(sumDesviacion / total);
+    
   }
   
   /**
@@ -529,6 +541,10 @@ public class VentanaImagen extends JInternalFrame {
   
   public double getBrillo() {
     return (this.brillo);
+  }
+  
+  public double getContraste() {
+    return (this.contraste);
   }
 
 }

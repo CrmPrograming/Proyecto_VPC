@@ -594,6 +594,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
                   + ((this.imagenFocus.esGris())? ("[" + min + ", " + max + "]"): "[null]") 
                   + "\n";
       informacion += "Brillo: " + this.imagenFocus.getBrillo() + "\n";
+      informacion += "Contraste: " + this.imagenFocus.getContraste() + "\n";
       JFrame.setDefaultLookAndFeelDecorated(false);
       JOptionPane.showMessageDialog(this,
           informacion,
