@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -82,7 +83,7 @@ public class VentanaOpciones extends JFrame implements ActionListener {
    * JComboBox asociado a la consola de debug
    */
   private JComboBox<String> boxConsola;
-  private String[] idioma;
+  private HashMap<String, String> idioma;
   private PanelPrincipal pPrincipal;
   private JLabel lColor;
   private JButton bColor;
@@ -94,8 +95,8 @@ public class VentanaOpciones extends JFrame implements ActionListener {
    * @param idioma Array con las cadenas en el idioma actual
    * @param FICHERO String con el nombre del fichero de opciones
    */
-  public VentanaOpciones(String[] idioma, final String FICHERO, PanelPrincipal pIni) {
-    super(idioma[3]);
+  public VentanaOpciones(HashMap<String, String> idioma, final String FICHERO, PanelPrincipal pIni) {
+    super(idioma.get("c_opciones"));
     this.setLocationRelativeTo(null);
     JPanel panelPrincipal = new JPanel(new BorderLayout());
     this.idioma = idioma;
@@ -108,10 +109,10 @@ public class VentanaOpciones extends JFrame implements ActionListener {
     this.bColor.setActionCommand("cambiarColor");
     this.bColor.addActionListener(this);
     this.bColor.setBackground(pIni.getElemColor());
-    this.botonAceptar = new JButton(idioma[17]);
+    this.botonAceptar = new JButton(idioma.get("mm_aceptar"));
     this.botonAceptar.setActionCommand("aceptar");
     this.botonAceptar.addActionListener(this);
-    this.botonCancelar = new JButton(idioma[18]);
+    this.botonCancelar = new JButton(idioma.get("mm_cancelar"));
     this.botonCancelar.setActionCommand("cancelar");
     this.botonCancelar.addActionListener(this);
     this.panelBotones.add(this.botonAceptar);
@@ -168,8 +169,8 @@ public class VentanaOpciones extends JFrame implements ActionListener {
    */
   private void mostrarMensajeCambios() {
     JOptionPane.showMessageDialog(this,
-        this.idioma[19],
-        this.idioma[3],
+        this.idioma.get("mm_algunosCambios"),
+        this.idioma.get("c_opciones"),
         JOptionPane.INFORMATION_MESSAGE);
   }
   

@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
@@ -64,7 +65,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   /**
    * Array con las cadenas del idioma actual
    */
-  private String[] idioma;
+  private HashMap<String, String> idioma;
   /**
    * Instanciaci&oacute;n de la ventana debug del programa
    */
@@ -119,32 +120,32 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     
     // Menu "Archivo"
     
-    menu = new JMenu(this.idioma[0]);
+    menu = new JMenu(this.idioma.get("c_archivo"));
     menu.setMnemonic(KeyEvent.VK_A);
     barraMenu.add(menu);
     
-    menuItem = new JMenuItem(this.idioma[5]);
+    menuItem = new JMenuItem(this.idioma.get("s_abrir"));
     menuItem.setMnemonic(KeyEvent.VK_A);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("abrir");
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[6]);
+    menuItem = new JMenuItem(this.idioma.get("s_guardar"));
     menuItem.setMnemonic(KeyEvent.VK_G);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("guardar");
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[7]);
+    menuItem = new JMenuItem(this.idioma.get("s_gComo"));
     menuItem.setMnemonic(KeyEvent.VK_C);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("guardarComo");
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[8]);
+    menuItem = new JMenuItem(this.idioma.get("s_salir"));
     menuItem.setMnemonic(KeyEvent.VK_S);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("salir");
@@ -153,32 +154,32 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     
     // Menu "Información"
     
-    menu = new JMenu(this.idioma[1]);
+    menu = new JMenu(this.idioma.get("c_informacion"));
     menu.setMnemonic(KeyEvent.VK_F);
     barraMenu.add(menu);
     
-    menuItem = new JMenuItem(this.idioma[9]);
+    menuItem = new JMenuItem(this.idioma.get("s_hAbsoluto"));
     menuItem.setMnemonic(KeyEvent.VK_H);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("histogramaAbsoluto");
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[10]);
+    menuItem = new JMenuItem(this.idioma.get("s_hAcumulativo"));
     menuItem.setMnemonic(KeyEvent.VK_H);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("histogramaAcumulativo");
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[11]);
+    menuItem = new JMenuItem(this.idioma.get("s_entropia"));
     menuItem.setMnemonic(KeyEvent.VK_E);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("entropia");
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[12]);
+    menuItem = new JMenuItem(this.idioma.get("s_iImagen"));
     menuItem.setMnemonic(KeyEvent.VK_F);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("info");
@@ -187,18 +188,18 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     
     // Menu "Operaciones"
     
-    menu = new JMenu(this.idioma[2]);
+    menu = new JMenu(this.idioma.get("c_operaciones"));
     menu.setMnemonic(KeyEvent.VK_O);
     barraMenu.add(menu);
     
-    menuItem = new JMenuItem(this.idioma[13]);
+    menuItem = new JMenuItem(this.idioma.get("s_duplicar"));
     menuItem.setMnemonic(KeyEvent.VK_D);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("duplicar");
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[14]);
+    menuItem = new JMenuItem(this.idioma.get("s_cEscalaGrices"));
     menuItem.setMnemonic(KeyEvent.VK_G);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("cambiarGris");
@@ -207,7 +208,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     
     // Menu "Ayuda"
     
-    menu = new JMenu(this.idioma[4]);
+    menu = new JMenu(this.idioma.get("c_ayuda"));
     menu.setMnemonic(KeyEvent.VK_Y);
     barraMenu.add(menu);
     
@@ -218,14 +219,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[3]);
+    menuItem = new JMenuItem(this.idioma.get("c_opciones"));
     menuItem.setMnemonic(KeyEvent.VK_P);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("opciones");
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma[15]);
+    menuItem = new JMenuItem(this.idioma.get("s_acerca"));
     menuItem.setMnemonic(KeyEvent.VK_A);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("acercaDe");
@@ -359,9 +360,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       fc = new JFileChooser(); 
       fc.setPreferredSize(new Dimension(800, 600));
       fc.setAccessory(new VistaPrevia(fc));
-      FileNameExtensionFilter tiffFilter = new FileNameExtensionFilter(this.idioma[16], FORMATO_FICHERO);
+      FileNameExtensionFilter tiffFilter = new FileNameExtensionFilter(this.idioma.get("mm_iTif"), FORMATO_FICHERO);
       fc.setFileFilter(tiffFilter);
-      fc.setDialogTitle(this.idioma[5]);
+      fc.setDialogTitle(this.idioma.get("s_abrir"));
       int returnVal = fc.showOpenDialog(this);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         File fichero = fc.getSelectedFile();
@@ -392,7 +393,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
           }          
         } else {
           mostrarError(21);
-          this.debug.escribirMensaje("> Se ha producido el error " + this.idioma[21]);
+          this.debug.escribirMensaje("> Se ha producido el error " + this.idioma.get("e_solotif"));
         }
       } else {
         seguir = true;
@@ -427,8 +428,22 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    */
   private void mostrarError(int idError) {
     JFrame.setDefaultLookAndFeelDecorated(false);
+    String aux = null;
+    switch (idError) {
+      case 21:
+        aux = this.idioma.get("e_solotif");
+        break;
+      case 22:
+        aux = this.idioma.get("e_iAbierta");
+        break;
+      case 23:
+        aux = this.idioma.get("e_iGris");
+        break;
+      default:
+        break;
+    }
     JOptionPane.showMessageDialog(this,
-        this.idioma[idError],
+        aux,
         "Error",
         JOptionPane.ERROR_MESSAGE);
     JFrame.setDefaultLookAndFeelDecorated(true);
@@ -448,8 +463,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   private void mostrarAcercaDe() {
     JFrame.setDefaultLookAndFeelDecorated(false);
     JOptionPane.showMessageDialog(this,
-        this.idioma[20] + ": \n   - " + AUTORES[0] + "\n   - " + AUTORES[1] + "\n" + VERSION,
-        this.idioma[15],
+        this.idioma.get("mm_autores") + ": \n   - " + AUTORES[0] + "\n   - " + AUTORES[1] + "\n" + VERSION,
+        this.idioma.get("s_acerca"),
         JOptionPane.INFORMATION_MESSAGE);
     JFrame.setDefaultLookAndFeelDecorated(true);
   }
@@ -508,7 +523,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       mostrarError(22);
     } else {
       JFileChooser fC = new JFileChooser();
-      FileNameExtensionFilter tiffFilter = new FileNameExtensionFilter(this.idioma[16], FORMATO_FICHERO);
+      FileNameExtensionFilter tiffFilter = new FileNameExtensionFilter(this.idioma.get("mm_iTif"), FORMATO_FICHERO);
       fC.setFileFilter(tiffFilter);
       fC.setCurrentDirectory(new File(this.imagenFocus.getRuta()));
       int valor = fC.showSaveDialog(this);
@@ -598,7 +613,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       JFrame.setDefaultLookAndFeelDecorated(false);
       JOptionPane.showMessageDialog(this,
           informacion,
-          this.idioma[12],
+          this.idioma.get("s_iImagen"),
           JOptionPane.INFORMATION_MESSAGE);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
@@ -614,7 +629,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     } else if (!this.imagenFocus.esGris()){
       mostrarError(23);
     } else {
-      this.imagenFocus.dibujarHistogramaAbsoluto(this.idioma[9]);
+      this.imagenFocus.dibujarHistogramaAbsoluto(this.idioma.get("s_hAbsoluto"));
     }
   }
   
@@ -628,7 +643,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     } else if (!this.imagenFocus.esGris()){
       mostrarError(23);
     } else {
-      this.imagenFocus.dibujarHistogramaAcumulativo(this.idioma[9]);
+      this.imagenFocus.dibujarHistogramaAcumulativo(this.idioma.get("s_hAbcumulativo"));
     }
   }
   
@@ -640,8 +655,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     } else {
       JFrame.setDefaultLookAndFeelDecorated(false);
       JOptionPane.showMessageDialog(this,
-          this.idioma[11] + ": " + this.imagenFocus.getEntropia(),
-          this.idioma[11],
+          this.idioma.get("s_entropia") + ": " + this.imagenFocus.getEntropia(),
+          this.idioma.get("s_entropia"),
           JOptionPane.INFORMATION_MESSAGE);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
