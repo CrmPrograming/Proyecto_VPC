@@ -117,6 +117,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     JMenuBar barraMenu = new JMenuBar();
     JMenu menu = null;
     JMenuItem menuItem = null;
+    JMenu subMenu = null;
     
     // Menu "Archivo"
     
@@ -145,6 +146,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
+    menu.addSeparator();
+    
     menuItem = new JMenuItem(this.idioma.get("s_salir"));
     menuItem.setMnemonic(KeyEvent.VK_S);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
@@ -171,6 +174,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.setActionCommand("histogramaAcumulativo");
     menuItem.addActionListener(this);
     menu.add(menuItem);
+    
+    menu.addSeparator();
     
     menuItem = new JMenuItem(this.idioma.get("s_entropia"));
     menuItem.setMnemonic(KeyEvent.VK_E);
@@ -204,7 +209,22 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("cambiarGris");
     menuItem.addActionListener(this);
-    menu.add(menuItem);    
+    menu.add(menuItem);
+    
+    // Submenu Operaciones Lineales
+    
+    subMenu = new JMenu(this.idioma.get("s_oLineales"));
+    subMenu.setMnemonic(KeyEvent.VK_L);
+    subMenu.addActionListener(this);
+    
+    menuItem = new JMenuItem(this.idioma.get("s_aBrilloContraste"));
+    menuItem.setMnemonic(KeyEvent.VK_B);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("aBrilloContraste");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);
+    
+    menu.add(subMenu);
     
     // Menu "Ayuda"
     
@@ -225,6 +245,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.setActionCommand("opciones");
     menuItem.addActionListener(this);
     menu.add(menuItem);
+    
+    menu.addSeparator();
     
     menuItem = new JMenuItem(this.idioma.get("s_acerca"));
     menuItem.setMnemonic(KeyEvent.VK_A);
@@ -343,6 +365,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("entropia".equals(arg0.getActionCommand())) {
       mostrarEntropia();
+    }
+    if ("aBrilloContraste".equals(arg0.getActionCommand())) {
+      ajusteBrilloContraste();
     }
   }
   
@@ -474,7 +499,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    * en foco creando una nueva ventana con la misma
    * imagen
    */
-  private void duplicarImagen() {
+  public void duplicarImagen() {
     if (this.imagenFocus == null) {
       mostrarError(22);      
     } else {
@@ -482,8 +507,15 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       String[] ruta = this.imagenFocus.getRuta().split(this.imagenFocus.getNombre());
       String nuevoNombre = nombre[0] + "_copia." + FORMATO_FICHERO; 
       String nuevaRuta = ruta[0] + nuevoNombre;
+      BufferedImage imagenOriginal = this.imagenFocus.getImagen();
+      BufferedImage imagenNueva = new BufferedImage(imagenOriginal.getWidth(), imagenOriginal.getHeight(), BufferedImage.TYPE_INT_RGB);
+      for (int i = 0; i < imagenNueva.getWidth(); i++) {
+        for (int j = 0; j < imagenNueva.getHeight(); j++) {
+          imagenNueva.setRGB(i, j, imagenOriginal.getRGB(i, j));
+        }
+      }
       VentanaImagen aux = new VentanaImagen(this.cantidadImagenes, 
-                                            this.imagenFocus.getImagen(), 
+                                            imagenNueva, 
                                             nuevoNombre, 
                                             this.debug, 
                                             this.listaImagenes, 
@@ -662,6 +694,18 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  private void ajusteBrilloContraste() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()){
+      mostrarError(23);
+    } else {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      new VentanaBrilloContraste(this.idioma, this);
+      JFrame.setDefaultLookAndFeelDecorated(true);
+    }
+  }
+  
   /**
    * M&eacute;todo setter para cambiar 
    * la imagen en foco
@@ -670,6 +714,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    */
   public void setFocus(VentanaImagen vI) {
     this.imagenFocus = vI;
+  }
+  
+  public VentanaImagen getImgFoco() {
+    return (this.imagenFocus);
   }
   
   /**

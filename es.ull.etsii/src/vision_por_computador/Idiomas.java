@@ -34,6 +34,8 @@ public interface Idiomas {
         put("s_duplicar", "Duplicar");
         put("s_cEscalaGrices", "Cambiar a escala de Grices");
         put("s_acerca", "Acerca de");
+        put("s_oLineales", "Operaciones Lineales");
+        put("s_aBrilloContraste", "Ajuste lineal del brillo y contraste");
         
         // Mensajes Menús
         
@@ -79,6 +81,8 @@ public interface Idiomas {
         put("s_duplicar", "Duplicate");
         put("s_cEscalaGrices", "Change to Grayscale");
         put("s_acerca", "About");
+        put("s_oLineales", "Lineal Operations");
+        put("s_aBrilloContraste", "Brightness and Contrast lineal adjust");
         
         // Mensajes Menús
         

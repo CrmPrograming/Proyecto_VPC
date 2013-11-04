@@ -155,6 +155,11 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   }
   
   public void run() {
+    try {
+      Thread.sleep(100);
+    } catch (Exception e) {
+      
+    }
     calcularNiveles();
   }
 
@@ -436,6 +441,19 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     histo.pack();
     RefineryUtilities.centerFrameOnScreen(histo);
     histo.setVisible(true);
+  }
+  
+  public void ajustarPixels(int[] nPixels) {
+    for (int i = 0; i < this.bufferImagen.getWidth(); i++) {
+      for (int j = 0; j < this.bufferImagen.getHeight(); j++) {
+        int pixelActual = new Color(this.bufferImagen.getRGB(i, j)).getRed();
+        int nuevoPixel = nPixels[pixelActual];
+        int result = nuevoPixel << 16; 
+        result += nuevoPixel << 8;     
+        result += nuevoPixel;
+        this.bufferImagen.setRGB(i, j, result);
+      }
+    }
   }
   
   /**
