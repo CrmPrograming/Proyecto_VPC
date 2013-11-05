@@ -217,6 +217,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     subMenu.setMnemonic(KeyEvent.VK_L);
     subMenu.addActionListener(this);
     
+
+    menuItem = new JMenuItem("Transformaciones Lineales por tramos");
+    menuItem.setMnemonic(KeyEvent.VK_T);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("tLinealesTramos");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);
+    
     menuItem = new JMenuItem(this.idioma.get("s_aBrilloContraste"));
     menuItem.setMnemonic(KeyEvent.VK_B);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.ALT_MASK));
@@ -368,6 +376,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("aBrilloContraste".equals(arg0.getActionCommand())) {
       ajusteBrilloContraste();
+    }
+    if ("tLinealesTramos".equals(arg0.getActionCommand())) {
+      transformacionLinealTramos();
     }
   }
   
@@ -702,6 +713,18 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     } else {
       JFrame.setDefaultLookAndFeelDecorated(false);
       new VentanaBrilloContraste(this.idioma, this);
+      JFrame.setDefaultLookAndFeelDecorated(true);
+    }
+  }
+  
+  private void transformacionLinealTramos() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()){
+      mostrarError(23);
+    } else {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      new VentanaTransformacionTrozos(this.idioma, this);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
   }

@@ -41,7 +41,7 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
     this.panelPrincipal = pPrincipal;
     this.tfBrillo = new JTextField("0", COLUMNAS);
     this.tfBrillo.setActionCommand("brillo");
-    this.tfContraste = new JTextField("0", COLUMNAS);
+    this.tfContraste = new JTextField("1", COLUMNAS);
     this.bAceptar = new JButton(idioma.get("mm_aceptar"));
     this.bAceptar.setActionCommand("aceptar");
     this.bAceptar.addActionListener(this);

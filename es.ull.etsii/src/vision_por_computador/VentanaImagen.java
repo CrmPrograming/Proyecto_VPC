@@ -444,8 +444,10 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   }
   
   public void ajustarPixels(int[] nPixels) {
-    for (int i = 0; i < this.bufferImagen.getWidth(); i++) {
-      for (int j = 0; j < this.bufferImagen.getHeight(); j++) {
+    final int ANCHO = this.bufferImagen.getWidth();
+    final int ALTO = this.bufferImagen.getHeight();
+    for (int i = 0; i < ANCHO; i++) {
+      for (int j = 0; j < ALTO; j++) {
         int pixelActual = new Color(this.bufferImagen.getRGB(i, j)).getRed();
         int nuevoPixel = nPixels[pixelActual];
         int result = nuevoPixel << 16; 
