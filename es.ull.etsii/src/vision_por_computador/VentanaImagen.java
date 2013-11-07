@@ -563,5 +563,9 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   public double getContraste() {
     return (this.contraste);
   }
+  
+  public int[] getNivelGris() {
+    return (this.nivelGris);
+  }
 
 }

@@ -462,7 +462,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    *
    * @param idError Identificador del error
    */
-  private void mostrarError(int idError) {
+  public void mostrarError(int idError) {
     JFrame.setDefaultLookAndFeelDecorated(false);
     String aux = null;
     switch (idError) {
@@ -474,6 +474,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
         break;
       case 23:
         aux = this.idioma.get("e_iGris");
+        break;
+      case 24:
+        aux = this.idioma.get("e_fNumerico");
         break;
       default:
         break;

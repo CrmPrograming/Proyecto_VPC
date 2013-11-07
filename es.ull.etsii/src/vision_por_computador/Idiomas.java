@@ -47,9 +47,10 @@ public interface Idiomas {
         
         // Errores
         
-        put("e_solotif", "Sólo se admiten ficheros de tipo '.tif'");
-        put("e_iAbierta", "No se puede realizar esta operación sin imágenes abiertas");
-        put("e_iGris", "Operación sólo para imágenes en escala de grices");      
+        put("e_solotif", "Sólo se admiten ficheros de tipo '.tif'");  // 21
+        put("e_iAbierta", "No se puede realizar esta operación sin imágenes abiertas");  // 22
+        put("e_iGris", "Operación sólo para imágenes en escala de grices");   // 23   
+        put("e_fNumerico", "El valor dado debe ser un número"); // 24
       }}));
      
   /**
@@ -97,6 +98,7 @@ public interface Idiomas {
         put("e_solotif", "Only '.tif' files accepted"); // 21
         put("e_iAbierta", "Can not perform this operation without open images"); // 22
         put("e_iGris", "Only avaliable for Grayscale images"); // 23
+        put("e_fNumerico", "The given value must be a number"); // 24
       }}));
 
 }

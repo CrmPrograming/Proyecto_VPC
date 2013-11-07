@@ -1,6 +1,7 @@
 package vision_por_computador;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 @SuppressWarnings("serial")
 public class VentanaTransformacionTrozos extends JFrame implements ActionListener {
@@ -61,9 +63,15 @@ public class VentanaTransformacionTrozos extends JFrame implements ActionListene
       this.dispose();
     }
     if ("bContinuar".equals(arg0.getActionCommand())) {
-      this.nTramos = Integer.parseInt(this.tfNTramos.getText());
-      new VentanaTramos();
-      this.dispose();
+      try {
+        this.nTramos = Integer.parseInt(this.tfNTramos.getText());
+        JFrame.setDefaultLookAndFeelDecorated(false);
+        new VentanaTramos();
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        this.dispose();
+      } catch (NumberFormatException e) {
+        this.pPrincipal.mostrarError(24);
+      }
     }
   }
   
@@ -73,11 +81,14 @@ public class VentanaTransformacionTrozos extends JFrame implements ActionListene
     private JLabel lValor;
     private JButton bAceptar;
     private JButton bCancelar;
-    private JTextField[] vPuntos;
-    private JTextField[] vValores;
+    protected JTextField[] vPuntos;
+    protected JTextField[] vValores;
+    protected final int ANCHO_G = 265;
+    protected final int ALTO_G = 285;
+    private JFrame fGrafica;
     
     public VentanaTramos() {
-      super("Tramos de la Transformación");
+      super("Tramos de la Transformación");      
       this.lPunto = new JLabel("Puntos");
       this.lValor = new JLabel("Valores");
       this.bAceptar = new JButton("Aceptar");
@@ -103,24 +114,148 @@ public class VentanaTransformacionTrozos extends JFrame implements ActionListene
       this.setContentPane(panelVentana);
       this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       this.setLocationRelativeTo(null);
-      this.setVisible(true);
       this.pack();
+      this.setVisible(true);      
       this.setResizable(false);
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      this.fGrafica = new JFrame("Gráfica");
+      PanelGrafica pGrafica = new PanelGrafica(fGrafica);
+      this.fGrafica.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+      this.fGrafica.setSize(ANCHO_G, ALTO_G);
+      this.fGrafica.setLocationRelativeTo(this);
+      this.fGrafica.setContentPane(pGrafica);
+      this.fGrafica.setResizable(false);
+      this.fGrafica.setVisible(true);
+      JFrame.setDefaultLookAndFeelDecorated(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
+      if ("cancelar".equals(arg0.getActionCommand())) {
+        this.fGrafica.dispose();
+        this.dispose();        
+      }
       
+      if ("aceptar".equals(arg0.getActionCommand())) {
+        calcularNuevaImagen();
+        this.fGrafica.dispose();
+        this.dispose();  
+      }
       
+    }
+    
+    private void calcularNuevaImagen() {
+      byte[] Pa = CDF();
+      int[] Vout = new int[256];
+      int aPrima = 0;
+      int b = 0;
+      int n = 0;
+      int[] vPunto = new int[nTramos + 1];
+      int[] vValor = new int[nTramos + 1];
+      
+      for (int i = 0; i < nTramos; i++) {
+        vPunto[i] = Integer.parseInt(this.vPuntos[i].getText());
+        vValor[i] = Integer.parseInt(this.vValores[i].getText());
+      }
+      vPunto[nTramos] = vValor[nTramos] = 255;      
+      for (int a = 0; a < 256; a++) {
+        b = Pa[a];
+        if (b <= vValor[0]) {
+          aPrima = 0;
+        } else if (b >= 1) {
+          aPrima = 255;
+        } else {
+          n = nTramos - 1;
+          while ((n >= 0) && (vValor[n] > b)) {
+            n--;
+          }
+          aPrima = vPunto[n] + (b - vValor[n]) * ((vPunto[n + 1]  - vPunto[n])/(vValor[n + 1]  - vValor[n]));
+        }
+        Vout[a] = aPrima;
+      }
+      pPrincipal.duplicarImagen();
+      pPrincipal.getImgFoco().ajustarPixels(Vout);
+    }
+    
+    private byte[] CDF() {
+      byte[] aux = new byte[256];
+      int n = 0;
+      int c = 0;
+      int[] nGris = pPrincipal.getImgFoco().getNivelGris();
+      for (int i = 0; i < 256; i++)
+        n += nGris[i];
+      for (int i = 0; i < 256; i++) {
+        c += nGris[i];
+        aux[i] = (byte) (c / n);
+      }
+      return (aux);
     }
     
     private class PanelGrafica extends JPanel {
       
+      private Timer temporizador;
+      private final int DELAY = 100;
+      private JFrame frame;
+      
+      public PanelGrafica(JFrame jF) {
+        this.frame = jF;
+        this.temporizador = new Timer(0, new TimerListener());
+        this.temporizador.setDelay(DELAY);
+        this.temporizador.start();    
+      }
+      
+      @Override
       public void paintComponent(Graphics g) {
+        g.drawRect(0, 0, ANCHO_G, ALTO_G);
+        if (comprobar()) {
+          Color aux = g.getColor();
+          g.setColor(Color.RED);        
+          for (int i = 0; i < nTramos; i++) {
+            dibujarRecta(g, i);
+          }
+          g.drawLine(255, 0, Integer.parseInt(vPuntos[nTramos].getText()), 255 - Integer.parseInt(vValores[nTramos].getText()));
+          g.setColor(aux);
+        }        
+      }
+      
+      private boolean comprobar() {
+        boolean result = true;
+        try {
+          for (int i = 0; i <= nTramos; i++) {
+            Integer.parseInt(vPuntos[i].getText());
+            Integer.parseInt(vValores[i].getText());
+          }
+        } catch (NumberFormatException e) {
+          result = false;
+        }        
+        return (result);        
+      }
+      
+      private void dibujarRecta(Graphics g, int i) {
+        int x1 = Integer.parseInt(vPuntos[i].getText()); 
+        int x2 = Integer.parseInt(vPuntos[i + 1].getText());
+        int y1 = Integer.parseInt(vValores[i].getText());
+        int y2 = Integer.parseInt(vValores[i + 1].getText());
+        g.drawLine(x1, 255 - y1, x2, 255 - y2);
+      }
+      
+      private class TimerListener implements ActionListener {
+
+        /**
+         * Sobreescritura del m&eacute;todo "actionPerformed" 
+         * para redibujar la imagen y dem&aacute;s elementos
+         * en el panel cuando se dispara el Timer
+         *
+         * @param arg0 Evento disparado
+         */
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+          frame.repaint();
+        }
         
       }
       
-    }
+    }    
     
   }
 }
