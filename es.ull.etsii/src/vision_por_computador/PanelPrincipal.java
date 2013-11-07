@@ -215,8 +215,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     
     subMenu = new JMenu(this.idioma.get("s_oLineales"));
     subMenu.setMnemonic(KeyEvent.VK_L);
-    subMenu.addActionListener(this);
-    
+    subMenu.addActionListener(this);    
 
     menuItem = new JMenuItem("Transformaciones Lineales por tramos");
     menuItem.setMnemonic(KeyEvent.VK_T);
@@ -229,6 +228,21 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.setMnemonic(KeyEvent.VK_B);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("aBrilloContraste");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);   
+    
+    menu.add(subMenu);
+    
+    // Submenu Operaciones No Lineales
+    
+    subMenu = new JMenu(this.idioma.get("s_nLineales"));
+    subMenu.setMnemonic(KeyEvent.VK_L);
+    subMenu.addActionListener(this);   
+    
+    menuItem = new JMenuItem(this.idioma.get("s_dImagenes"));
+    menuItem.setMnemonic(KeyEvent.VK_G);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("dImagenes");
     menuItem.addActionListener(this);
     subMenu.add(menuItem);
     
@@ -380,6 +394,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     if ("tLinealesTramos".equals(arg0.getActionCommand())) {
       transformacionLinealTramos();
     }
+    if ("dImagenes".equals(arg0.getActionCommand())) {
+      diferenciaDeImagenes();
+    }
   }
   
   /**
@@ -403,14 +420,27 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         File fichero = fc.getSelectedFile();
         if (fichero.getName().toLowerCase().contains(FORMATO_FICHERO)) {
-          seguir = true;  
+          seguir = true;
+          String nombre = fichero.getName();
+          if (this.listaImagenes.size() > 0) {
+            boolean repetida = false;
+            int i = 0;
+            do {
+              if (this.listaImagenes.get(i).getNombre().equals(nombre)) {
+                repetida = true;
+                nombre = nombre.split("\\." + FORMATO_FICHERO)[0] + "_bi." + FORMATO_FICHERO;
+              } else {
+                i++;
+              }
+            } while ((!repetida) && (i < this.listaImagenes.size()));
+          }
           try {
             BufferedImage bImage = null;
             bImage = construirImagen(fichero);
             VentanaImagen aux;
             aux = new VentanaImagen(this.cantidadImagenes, 
                                     bImage, 
-                                    fichero.getName(), 
+                                    nombre, 
                                     this.debug, 
                                     this.listaImagenes, 
                                     this,
@@ -478,6 +508,8 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       case 24:
         aux = this.idioma.get("e_fNumerico");
         break;
+      case 25:
+        aux = this.idioma.get("e_mImagenes");
       default:
         break;
     }
@@ -723,11 +755,25 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   private void transformacionLinealTramos() {
     if (this.imagenFocus == null) {
       mostrarError(22);
-    } else if (!this.imagenFocus.esGris()){
+    } else if (!this.imagenFocus.esGris()) {
       mostrarError(23);
     } else {
       JFrame.setDefaultLookAndFeelDecorated(false);
       new VentanaTransformacionTrozos(this.idioma, this);
+      JFrame.setDefaultLookAndFeelDecorated(true);
+    }
+  }
+  
+  private void diferenciaDeImagenes() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()) {
+      mostrarError(23);
+    } else if (this.listaImagenes.size() < 2) {
+      mostrarError(25);
+    } else {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      new VentanaDiferenciaImagenes(this.idioma, this);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
   }
@@ -772,6 +818,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   
   public void setElemColor(Color nColor) {
     this.colorElementos = nColor;
+  }
+  
+  public ArrayList<VentanaImagen> getListaImagenes() {
+    return (this.listaImagenes);
   }
 
 }

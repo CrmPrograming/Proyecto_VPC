@@ -36,6 +36,8 @@ public interface Idiomas {
         put("s_acerca", "Acerca de");
         put("s_oLineales", "Operaciones Lineales");
         put("s_aBrilloContraste", "Ajuste lineal del brillo y contraste");
+        put("s_nLineales", "Operaciones no Lineales");
+        put("s_dImagenes", "Diferencia de imágenes");
         
         // Mensajes Menús
         
@@ -51,6 +53,7 @@ public interface Idiomas {
         put("e_iAbierta", "No se puede realizar esta operación sin imágenes abiertas");  // 22
         put("e_iGris", "Operación sólo para imágenes en escala de grices");   // 23   
         put("e_fNumerico", "El valor dado debe ser un número"); // 24
+        put("e_mImagenes", "No se puede realizar esta operación sin tener 2 imágenes abiertas como mínimo");
       }}));
      
   /**
@@ -84,6 +87,8 @@ public interface Idiomas {
         put("s_acerca", "About");
         put("s_oLineales", "Lineal Operations");
         put("s_aBrilloContraste", "Brightness and Contrast lineal adjust");
+        put("s_nLineales", "Not Lineal Operations");
+        put("s_dImagenes", "Differences between two images");
         
         // Mensajes Menús
         
@@ -99,6 +104,7 @@ public interface Idiomas {
         put("e_iAbierta", "Can not perform this operation without open images"); // 22
         put("e_iGris", "Only avaliable for Grayscale images"); // 23
         put("e_fNumerico", "The given value must be a number"); // 24
+        put("e_mImagenes", "Can not perform this operation without two open image at least");
       }}));
 
 }
