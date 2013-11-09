@@ -236,7 +236,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     // Submenu Operaciones No Lineales
     
     subMenu = new JMenu(this.idioma.get("s_nLineales"));
-    subMenu.setMnemonic(KeyEvent.VK_L);
+    subMenu.setMnemonic(KeyEvent.VK_N);
     subMenu.addActionListener(this);   
     
     menuItem = new JMenuItem(this.idioma.get("s_dImagenes"));
@@ -823,6 +823,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   
   public ArrayList<VentanaImagen> getListaImagenes() {
     return (this.listaImagenes);
+  }
+  
+  public VentanaDebug getVentanaDebug() {
+    return (this.debug);
   }
 
 }
