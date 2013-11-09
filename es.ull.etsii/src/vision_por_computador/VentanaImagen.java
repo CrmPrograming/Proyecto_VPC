@@ -44,13 +44,6 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
    */
   private VentanaDebug debug;
   /**
-   * ArrayList con todas las im&aacute;genes abiertas
-   * en un momento dado obtenido de la clase PanelPrincipal
-   * 
-   * @see PanelPrincipal
-   */
-  private ArrayList<VentanaImagen> listaImagens;
-  /**
    * Cadena con el nombre de la ventana
    */
   private String nombre;
@@ -90,6 +83,8 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   private double brillo = 0.0d;
   
   private double contraste = 0.0d;
+  
+  private VentanaImagen copiaStatica;
   /**
    * Instancia un nuevo objeto
    * de tipo VentanaImagen.
@@ -102,7 +97,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
    * @param pPrincipal Instanciaci&oacute;n del panel principal
    * @param path Ruta de la imagen 
    */
-  public VentanaImagen(int idVentana, BufferedImage bImage, String nombreImagen, VentanaDebug debg, ArrayList<VentanaImagen> listaImagenes, PanelPrincipal pPrincipal, String path) {
+  public VentanaImagen(int idVentana, BufferedImage bImage, String nombreImagen, VentanaDebug debg, PanelPrincipal pPrincipal, String path) {
     super("Imagen " + idVentana + ": " + nombreImagen,
         false, //resizable
         true, //closable
@@ -111,7 +106,6 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.id = idVentana;
     this.debug = debg;
     this.bufferImagen = bImage;  
-    this.listaImagens = listaImagenes;
     this.nombre = nombreImagen;
     this.ruta = path;
     this.escalaGris = false;
@@ -133,11 +127,20 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
        */
       @Override
       public void internalFrameClosing(InternalFrameEvent e) {
-        listaImagens.remove(this);
+        ArrayList<VentanaImagen> lista = panelPrincipal.getListaImagenes();
+        boolean encontrado = false;
+        int i = 0;
+        do {
+          if (lista.get(i) == copiaStatica) {
+            encontrado = true;
+          } else {
+            i++;
+          }
+        } while (!encontrado);
+        panelPrincipal.borrarVentana(i);
+        panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() - 1);
         debug.escribirMensaje("> Cerrada la imagen " + nombre);
-        if (listaImagens.size() == 0) {
-          panelPrincipal.setFocus(null);
-        }
+        panelPrincipal.setFocus(null);        
       }
       
       /**
@@ -152,6 +155,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
       }
       
     });
+    this.copiaStatica = this;
   }
   
   public void run() {
@@ -246,10 +250,9 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
                                                   subImagen, 
                                                   nuevoNombre, 
                                                   debug, 
-                                                  listaImagens, 
                                                   panelPrincipal,
                                                   nuevaRuta);   
-              listaImagens.add(aux);
+              panelPrincipal.getListaImagenes().add(aux);
               panelPrincipal.add(aux);
               debug.escribirMensaje("> Se ha cambiado a escala de grices la imagen en foco");
               panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);

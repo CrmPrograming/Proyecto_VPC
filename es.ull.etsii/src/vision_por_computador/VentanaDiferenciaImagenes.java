@@ -1,11 +1,16 @@
 package vision_por_computador;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
@@ -24,6 +29,7 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
   private JComboBox<String> cbImagenes;
   private String[] nombresImagenes;
   private PanelVistaPrevia pVista;  
+  private VentanaImagen vSeleccionada;
 
   public VentanaDiferenciaImagenes(HashMap<String, String> idioma, PanelPrincipal panelPrincipal) {
     super("Diferencia de Imágenes");
@@ -73,6 +79,33 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
       this.pVista.repaint();
     }
     
+    if ("seleccionar".equals(arg0.getActionCommand())) {
+      calcularDiferencias();
+      this.dispose();
+    }
+    
+  }
+  
+  private void calcularDiferencias() {
+    BufferedImage imgFoco = this.pPrincipal.getImgFoco().getImagen();
+    BufferedImage imgSeg = this.vSeleccionada.getImagen();
+    final int UMBRAL_T = 220;
+    int[][] dif = new int[imgFoco.getWidth()][imgFoco.getHeight()];
+    for (int i = 0; i < imgFoco.getWidth(); i++) {      
+      for (int j = 0; j < imgFoco.getHeight(); j++) {
+        dif[i][j] = Math.abs(new Color(imgFoco.getRGB(i, j)).getRed() - new Color(imgSeg.getRGB(i, j)).getRed());
+      }
+    }
+    int[] Vout = new int[256];
+    for (int i = 0; i < 256; i++) {  
+      if (i > UMBRAL_T) {
+        Vout[i] = 255;
+      } else {
+        Vout[i] = 0;
+      }
+    }
+    this.pPrincipal.duplicarImagen();
+    this.pPrincipal.getImgFoco().ajustarPixels(Vout);
   }
   
   private class PanelVistaPrevia extends JPanel {
@@ -80,9 +113,19 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
     @Override
     public void paintComponent(Graphics g) {
       if (cbImagenes.getSelectedIndex() != 0) {
-        int indice = cbImagenes.getSelectedIndex();
-        BufferedImage bI = pPrincipal.getListaImagenes().get(indice).getImagen();
-        ImageIcon icon = new ImageIcon(bI);
+        String nombre = (String) cbImagenes.getSelectedItem();
+        ArrayList<VentanaImagen> list = pPrincipal.getListaImagenes();
+        boolean encontrado = false;
+        int i = 0;
+        do {
+          if (list.get(i).getNombre().equals(nombre)) {
+            encontrado = true;
+          } else {
+            i++;
+          }
+        } while ((!encontrado) && (i < list.size()));
+        vSeleccionada = pPrincipal.getListaImagenes().get(i);
+        ImageIcon icon = new ImageIcon(vSeleccionada.getImagen());
         if (icon.getIconWidth() > 220) {
           icon = new ImageIcon(icon.getImage().getScaledInstance(220, -1, Image.SCALE_DEFAULT));
         }

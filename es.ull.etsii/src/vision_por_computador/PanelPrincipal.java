@@ -442,7 +442,6 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
                                     bImage, 
                                     nombre, 
                                     this.debug, 
-                                    this.listaImagenes, 
                                     this,
                                     fichero.getAbsolutePath());
             this.listaImagenes.add(aux);
@@ -564,7 +563,6 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
                                             imagenNueva, 
                                             nuevoNombre, 
                                             this.debug, 
-                                            this.listaImagenes, 
                                             this,
                                             nuevaRuta);   
       this.listaImagenes.add(aux);
@@ -653,7 +651,6 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
                                             imagenGris, 
                                             nuevoNombre, 
                                             this.debug, 
-                                            this.listaImagenes, 
                                             this,
                                             nuevaRuta);   
       this.listaImagenes.add(aux);
@@ -776,6 +773,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       new VentanaDiferenciaImagenes(this.idioma, this);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
+  }
+  
+  public void borrarVentana(int i) {
+    this.listaImagenes.remove(i);
   }
   
   /**
