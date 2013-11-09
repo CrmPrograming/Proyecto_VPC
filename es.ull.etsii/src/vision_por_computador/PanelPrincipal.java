@@ -246,6 +246,13 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.addActionListener(this);
     subMenu.add(menuItem);
     
+    menuItem = new JMenuItem(this.idioma.get("s_mCambios"));
+    menuItem.setMnemonic(KeyEvent.VK_M);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("mCambios");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);
+    
     menu.add(subMenu);
     
     // Menu "Ayuda"
@@ -395,7 +402,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       transformacionLinealTramos();
     }
     if ("dImagenes".equals(arg0.getActionCommand())) {
-      diferenciaDeImagenes();
+      diferenciaDeImagenes(false);
+    }
+    if ("mCambios".equals(arg0.getActionCommand())) {
+      diferenciaDeImagenes(true);
     }
   }
   
@@ -761,7 +771,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
-  private void diferenciaDeImagenes() {
+  private void diferenciaDeImagenes(boolean mod) {
     if (this.imagenFocus == null) {
       mostrarError(22);
     } else if (!this.imagenFocus.esGris()) {
@@ -770,7 +780,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       mostrarError(25);
     } else {
       JFrame.setDefaultLookAndFeelDecorated(false);
-      new VentanaDiferenciaImagenes(this.idioma, this);
+      new VentanaDiferenciaImagenes(this.idioma, this).setDiferencia(mod);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
   }

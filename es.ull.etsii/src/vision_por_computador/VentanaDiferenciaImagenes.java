@@ -8,6 +8,9 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,6 +35,8 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
   private PanelVistaPrevia pVista;  
   private VentanaImagen vSeleccionada;
   private HistogramaAbsoluto histo;
+  private int[][] result;
+  private boolean diferencia;
 
   public VentanaDiferenciaImagenes(HashMap<String, String> idioma, PanelPrincipal panelPrincipal) {
     super("Diferencia de Imágenes");
@@ -91,14 +96,16 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
   
   private void calcularDiferencias() {
     BufferedImage imgFoco = this.pPrincipal.getImgFoco().getImagen();
-    BufferedImage imgSeg = this.vSeleccionada.getImagen();
+    BufferedImage imgSeg = this.vSeleccionada.getImagen();    
     int[] nGris = new int[256];
     int[][] dif = new int[imgFoco.getWidth()][imgFoco.getHeight()];
     for (int i = 0; i < imgFoco.getWidth(); i++) {      
       for (int j = 0; j < imgFoco.getHeight(); j++) {
         dif[i][j] = Math.abs(new Color(imgFoco.getRGB(i, j)).getRed() - new Color(imgSeg.getRGB(i, j)).getRed());
+
       }
     }   
+    this.result = dif;
     for (int i = 0; i < 256; i++) {
       nGris[i] = 0;
     }
@@ -107,13 +114,51 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
         nGris[dif[i][j]]++;
       }
     } 
-    this.histo = new HistogramaAbsoluto("Histograma temporal", nGris);    
-    this.histo.pack();
-    RefineryUtilities.centerFrameOnScreen(this.histo);
-    this.histo.setVisible(true);
-    JFrame.setDefaultLookAndFeelDecorated(false);
-    new VentanaUmbral();
-    JFrame.setDefaultLookAndFeelDecorated(true);
+    if (diferencia) {
+      this.histo = new HistogramaAbsoluto("Histograma temporal", nGris);    
+      this.histo.pack();
+      RefineryUtilities.centerFrameOnScreen(this.histo);
+      this.histo.setVisible(true);
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      new VentanaUmbral();
+      JFrame.setDefaultLookAndFeelDecorated(true);
+    } else {
+      mostrarImagenDiferencia();
+    }
+  }
+  
+  private void mostrarImagenDiferencia() {
+    if (pPrincipal.getImgFoco() == null) {
+      pPrincipal.mostrarError(22);      
+    } else {
+      final String FORMATO_FICHERO = "tif";
+      VentanaImagen imgFoco = pPrincipal.getImgFoco();
+      String[] nombre = imgFoco.getNombre().split("." + FORMATO_FICHERO);
+      String[] ruta = imgFoco.getRuta().split(imgFoco.getNombre());
+      String nuevoNombre = nombre[0] + "_diferencia." + FORMATO_FICHERO; 
+      String nuevaRuta = ruta[0] + nuevoNombre;
+      BufferedImage imagenOriginal = imgFoco.getImagen();
+      BufferedImage imagenNueva = new BufferedImage(imagenOriginal.getWidth(), imagenOriginal.getHeight(), BufferedImage.TYPE_INT_RGB);
+      for (int i = 0; i < imagenNueva.getWidth(); i++) {
+        for (int j = 0; j < imagenNueva.getHeight(); j++) {
+          Color auxColor = new Color(imagenOriginal.getRGB(i, j));
+          if (this.result[i][j] > 0) {
+            auxColor = Color.RED;
+          }
+          imagenNueva.setRGB(i, j, auxColor.getRGB());
+        }
+      }
+      VentanaImagen aux = new VentanaImagen(pPrincipal.getCantidadImagenes(), 
+                                            imagenNueva, 
+                                            nuevoNombre, 
+                                            pPrincipal.getVentanaDebug(), 
+                                            pPrincipal,
+                                            nuevaRuta);   
+      pPrincipal.getListaImagenes().add(aux);
+      pPrincipal.setCantidadImagenes(pPrincipal.getCantidadImagenes() + 1);
+      pPrincipal.add(aux);
+      pPrincipal.getVentanaDebug().escribirMensaje("> Se ha mostrado la imagen diferencia");    
+    }
   }
   
   private class VentanaUmbral extends JFrame implements ActionListener {
@@ -191,8 +236,9 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
                                               pPrincipal,
                                               nuevaRuta);   
         pPrincipal.getListaImagenes().add(aux);
+        pPrincipal.setCantidadImagenes(pPrincipal.getCantidadImagenes() + 1);
         pPrincipal.add(aux);
-        pPrincipal.getVentanaDebug().escribirMensaje("> Se ha construido el mapa de diferencia");    
+        pPrincipal.getVentanaDebug().escribirMensaje("> Se ha construido el mapa de cambios");    
       }
     }
     
@@ -223,6 +269,10 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
       }      
     }
     
+  }
+  
+  public void setDiferencia(boolean arg) {
+    this.diferencia = arg;
   }
   
 

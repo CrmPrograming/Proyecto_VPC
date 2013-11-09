@@ -1,3 +1,3 @@
 idioma=0
-color=255,0,0
+color=255,255,0
 debug=0
