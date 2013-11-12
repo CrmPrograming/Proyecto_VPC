@@ -1,8 +1,10 @@
 package vision_por_computador;
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +22,7 @@ import java.util.HashMap;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -27,6 +30,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -253,6 +258,13 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.addActionListener(this);
     subMenu.add(menuItem);
     
+    menuItem = new JMenuItem(this.idioma.get("s_gamma"));
+    menuItem.setMnemonic(KeyEvent.VK_M);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("gamma");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);
+    
     menu.add(subMenu);
     
     // Menu "Ayuda"
@@ -406,6 +418,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("mCambios".equals(arg0.getActionCommand())) {
       diferenciaDeImagenes(true);
+    }
+    if ("gamma".equals(arg0.getActionCommand())) {
+      operacionGamma();
     }
   }
   
@@ -783,6 +798,45 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       new VentanaDiferenciaImagenes(this.idioma, this).setDiferencia(mod);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
+  }
+  
+  private void operacionGamma() {
+    final JFrame fGamma = new JFrame(this.idioma.get("s_gamma"));
+    JPanel panelVentana = new JPanel(new BorderLayout());
+    JPanel panelBotones = new JPanel(new GridLayout(1, 2));
+    JButton bAceptar = new JButton(this.idioma.get("mm_aceptar"));
+    JButton bCancelar = new JButton(this.idioma.get("mm_cancelar"));
+    final JTextField tfValor = new JTextField();
+    fGamma.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    bAceptar.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        try {
+        imagenFocus.operacionGamma(Double.parseDouble(tfValor.getText()));
+        } catch (NumberFormatException e) {
+          mostrarError(24);
+        }
+        fGamma.dispose();        
+      }
+      
+    });
+    
+    bCancelar.addActionListener(new ActionListener() {
+      
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        fGamma.dispose();
+      }
+    });
+    panelBotones.add(bAceptar);
+    panelBotones.add(bCancelar);
+    panelVentana.add(panelBotones, BorderLayout.SOUTH);
+    panelVentana.add(tfValor);
+    fGamma.setContentPane(panelVentana);
+    fGamma.setLocationRelativeTo(null);
+    fGamma.setSize(300, 100);
+    fGamma.setVisible(true);
   }
   
   public void borrarVentana(int i) {
