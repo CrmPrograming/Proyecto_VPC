@@ -225,6 +225,8 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
             Color auxColor = new Color(imagenOriginal.getRGB(i, j));
             if (auxColor.getRed() >= UMBRAL) {
               auxColor = Color.RED;
+            } else {
+              auxColor = Color.BLACK;
             }
             imagenNueva.setRGB(i, j, auxColor.getRGB());
           }
