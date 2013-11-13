@@ -587,5 +587,18 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   public int[] getNivelGris() {
     return (this.nivelGris);
   }  
+  
+  public String toString() {
+    String desc = "";
+    desc = "- ID: " + this.id + "\n";
+    desc += "- Nombre: " + this.nombre + "\n";
+    desc += "- Ruta: " + this.ruta + "\n";
+    desc += "- Tamaño: [" + this.bufferImagen.getWidth() + ", " + this.bufferImagen.getHeight() + "]\n";
+    desc += "- Brillo: " + this.brillo + "\n";
+    desc += "- Contraste: " + this.contraste + "\n";
+    desc += "- Entropía: " + this.entropia + "\n";
+    desc += "- Min/Max: [" + this.valorMin + ", " + this.valorMax + "]\n";
+    return (desc);
+  }
 
 }
