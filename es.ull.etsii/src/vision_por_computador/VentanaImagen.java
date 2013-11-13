@@ -461,6 +461,23 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     }
   }
   
+  public void operacionGamma(double gamma) {
+    final int K = 256;
+    int aMax = K - 1;
+    int[] Fgc = new int[K];
+    
+    for (int a = 0; a < K; a++) {
+       double aa = (double) a / aMax; 
+       double bb = Math.pow(aa,gamma);
+       int b = (int) Math.round(bb * aMax);
+       Fgc[a] = b;
+     }
+    
+    this.panelPrincipal.duplicarImagen();
+    this.panelPrincipal.getImgFoco().ajustarPixels(Fgc);
+    
+  }
+  
   /**
    * M&eacute;todo setter para cambiar 
    * el atributo id
@@ -569,23 +586,6 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   
   public int[] getNivelGris() {
     return (this.nivelGris);
-  }
-
-  public void operacionGamma(double gamma) {
-    final int K = 256;
-    int aMax = K - 1;
-    int[] Fgc = new int[K];
-    
-    for (int a = 0; a < K; a++) {
-       double aa = (double) a / aMax; 
-       double bb = Math.pow(aa,gamma);
-       int b = (int) Math.round(bb * aMax);
-       Fgc[a] = b;
-     }
-    
-    this.panelPrincipal.duplicarImagen();
-    this.panelPrincipal.getImgFoco().ajustarPixels(Fgc);
-    
-  }
+  }  
 
 }

@@ -10,6 +10,7 @@ public interface Idiomas {
    *  del programa en Español
    *  
    */
+  @Anotaciones(desc = "Implementar usando fichero XML")
   final HashMap<String, String> I_ESPANOL = new HashMap<String, String> (Collections.unmodifiableMap(
       new HashMap<String, String>() {{
         
@@ -39,7 +40,7 @@ public interface Idiomas {
         put("s_nLineales", "Operaciones no Lineales");
         put("s_dImagenes", "Diferencia de imágenes");
         put("s_mCambios", "Mapa de Cambios");
-        put("s_gamma", "Gamma");
+        put("s_gamma", "Correción Gamma");
         
         // Mensajes Menús
         
@@ -63,6 +64,7 @@ public interface Idiomas {
    *  del programa en Inglés
    *  
    */
+  @Anotaciones(desc = "Implementar usando fichero XML")
   final HashMap<String, String> I_ENGLISH = new HashMap<String, String> (Collections.unmodifiableMap(
       new HashMap<String, String>() {{
         
@@ -92,7 +94,7 @@ public interface Idiomas {
         put("s_nLineales", "Not Lineal Operations");
         put("s_dImagenes", "Differences between two images");
         put("s_mCambios", "Change's map");
-        put("s_gamma", "Gamma");
+        put("s_gamma", "Gamma Correction");
         
         // Mensajes Menús
         

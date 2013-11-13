@@ -39,9 +39,9 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
     final int COLUMNAS = 3;
     this.idioma = idioma;
     this.panelPrincipal = pPrincipal;
-    this.tfBrillo = new JTextField("0", COLUMNAS);
+    this.tfBrillo = new JTextField(String.valueOf(panelPrincipal.getImgFoco().getBrillo()), COLUMNAS);
     this.tfBrillo.setActionCommand("brillo");
-    this.tfContraste = new JTextField("1", COLUMNAS);
+    this.tfContraste = new JTextField(String.valueOf(panelPrincipal.getImgFoco().getContraste()), COLUMNAS);
     this.bAceptar = new JButton(idioma.get("mm_aceptar"));
     this.bAceptar.setActionCommand("aceptar");
     this.bAceptar.addActionListener(this);
@@ -81,10 +81,13 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
   }
   
   private void construirTabla() {
-    final Float CONTRASTE = Float.parseFloat(this.tfContraste.getText());
-    final Float BRILLO = Float.parseFloat(this.tfBrillo.getText());
+    
+    Double nContraste = Double.parseDouble(this.tfContraste.getText());
+    nContraste /= panelPrincipal.getImgFoco().getContraste();
+    Double nBrillo = Double.parseDouble(this.tfBrillo.getText());
+    nBrillo = nBrillo - nContraste * panelPrincipal.getImgFoco().getBrillo();
     for (int i = 0; i < 256; i++) {
-      this.tVout[i] = Integer.valueOf((int) (CONTRASTE * i  + BRILLO));
+      this.tVout[i] = (int) ((nContraste * i) + nBrillo);
       if (this.tVout[i] > 255)
         this.tVout[i] = 255;
       if (this.tVout[i] < 0)
@@ -95,6 +98,7 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
   private void crearNuevaImagen() {
     this.panelPrincipal.duplicarImagen();
     this.panelPrincipal.getImgFoco().ajustarPixels(this.tVout);
+    this.panelPrincipal.getImgFoco().fijarGris(true);
   }
 
 }

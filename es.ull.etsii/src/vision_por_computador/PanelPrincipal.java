@@ -578,6 +578,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       String nuevoNombre = nombre[0] + "_copia." + FORMATO_FICHERO; 
       String nuevaRuta = ruta[0] + nuevoNombre;
       BufferedImage imagenOriginal = this.imagenFocus.getImagen();
+      boolean gris = this.imagenFocus.esGris();
       BufferedImage imagenNueva = new BufferedImage(imagenOriginal.getWidth(), imagenOriginal.getHeight(), BufferedImage.TYPE_INT_RGB);
       for (int i = 0; i < imagenNueva.getWidth(); i++) {
         for (int j = 0; j < imagenNueva.getHeight(); j++) {
@@ -594,6 +595,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.add(aux);
       this.debug.escribirMensaje("> Se ha duplicado la imagen en foco");
       this.cantidadImagenes++;
+      aux.fijarGris(gris);
       this.imagenFocus = aux;
     }
   }
