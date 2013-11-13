@@ -805,9 +805,54 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       mostrarError(23);
     } else {
       VentanaImagen iFoc = this.imagenFocus;
+      BufferedImage imgFoc = iFoc.getImagen();
+      BufferedImage imgNueva = new BufferedImage(imgFoc.getWidth(), imgFoc.getHeight(), BufferedImage.TYPE_INT_RGB);
+      final int W = imgFoc.getWidth();
+      final int H = imgFoc.getHeight();
+      final int M = W * H;
+      final int MAX_PIXELS = 256;
+      int[] nivelGris = new int[iFoc.getNivelGris().length]; 
       iFoc.dibujarHistogramaAbsoluto(this.idioma.get("s_hAbsoluto") + " " + iFoc.getNombre());
-      iFoc.dibujarHistogramaAcumulativo(this.idioma.get("s_hAcumulativo") + " " + iFoc.getNombre());
-      
+      iFoc.dibujarHistogramaAcumulativo(this.idioma.get("s_hAcumulativo") + " " + iFoc.getNombre());      
+      for (int i = 1; i < nivelGris.length; i++) {
+        nivelGris[i] = iFoc.getNivelGris()[i];
+        if (i > 0) {
+          nivelGris[i] = nivelGris[i - 1] + nivelGris[i];
+        }
+      }
+      for (int i = 0; i < W; i++) {
+        for (int j = 0; j < H; j++) {
+          int a = new Color(imgFoc.getRGB(i, j)).getRed();
+          int b = nivelGris[a] * (MAX_PIXELS - 1) / M;
+          int result = b << 16;
+          result += b << 8;     
+          result += b;
+          imgNueva.setRGB(i, j, result);
+        }
+      }
+      final String FORMATO_FICHERO = "tif";
+      String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
+      String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
+      String nuevoNombre = nombre[0] + "_ecualizada." + FORMATO_FICHERO; 
+      String nuevaRuta = ruta[0] + nuevoNombre;      
+      VentanaImagen aux = new VentanaImagen(this.cantidadImagenes, 
+                                            imgNueva, 
+                                            nuevoNombre, 
+                                            this.debug, 
+                                            this,
+                                            nuevaRuta);   
+      this.listaImagenes.add(aux);
+      this.cantidadImagenes++;
+      this.add(aux);
+      aux.fijarGris(true);
+      this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
+      try {
+        Thread.sleep(1000);
+      } catch (Exception e) {
+        
+      }
+      aux.dibujarHistogramaAbsoluto(this.idioma.get("s_hAbsoluto") + " " + aux.getNombre());
+      aux.dibujarHistogramaAcumulativo(this.idioma.get("s_hAcumulativo") + " " + aux.getNombre());
     }
     
   }
