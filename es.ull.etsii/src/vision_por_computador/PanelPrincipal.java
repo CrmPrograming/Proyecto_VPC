@@ -244,9 +244,23 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     subMenu.setMnemonic(KeyEvent.VK_N);
     subMenu.addActionListener(this);   
     
-    menuItem = new JMenuItem(this.idioma.get("s_dImagenes"));
+    menuItem = new JMenuItem(this.idioma.get("s_eqHistograma"));
+    menuItem.setMnemonic(KeyEvent.VK_E);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("eqHistograma");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);
+    
+    menuItem = new JMenuItem(this.idioma.get("s_gamma"));
     menuItem.setMnemonic(KeyEvent.VK_G);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("gamma");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);
+    
+    menuItem = new JMenuItem(this.idioma.get("s_dImagenes"));
+    menuItem.setMnemonic(KeyEvent.VK_F);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("dImagenes");
     menuItem.addActionListener(this);
     subMenu.add(menuItem);
@@ -256,14 +270,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("mCambios");
     menuItem.addActionListener(this);
-    subMenu.add(menuItem);
-    
-    menuItem = new JMenuItem(this.idioma.get("s_gamma"));
-    menuItem.setMnemonic(KeyEvent.VK_M);
-    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
-    menuItem.setActionCommand("gamma");
-    menuItem.addActionListener(this);
-    subMenu.add(menuItem);
+    subMenu.add(menuItem);   
     
     menu.add(subMenu);
     
@@ -412,15 +419,18 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("tLinealesTramos".equals(arg0.getActionCommand())) {
       transformacionLinealTramos();
+    }    
+    if ("eqHistograma".equals(arg0.getActionCommand())) {
+      ecualizacionHistograma();
+    }
+    if ("gamma".equals(arg0.getActionCommand())) {
+      operacionGamma();
     }
     if ("dImagenes".equals(arg0.getActionCommand())) {
       diferenciaDeImagenes(false);
     }
     if ("mCambios".equals(arg0.getActionCommand())) {
       diferenciaDeImagenes(true);
-    }
-    if ("gamma".equals(arg0.getActionCommand())) {
-      operacionGamma();
     }
   }
   
@@ -745,7 +755,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     } else if (!this.imagenFocus.esGris()){
       mostrarError(23);
     } else {
-      this.imagenFocus.dibujarHistogramaAcumulativo(this.idioma.get("s_hAbcumulativo"));
+      this.imagenFocus.dibujarHistogramaAcumulativo(this.idioma.get("s_hAcumulativo"));
     }
   }
   
@@ -786,20 +796,20 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       new VentanaTransformacionTrozos(this.idioma, this);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
-  }
+  } 
   
-  private void diferenciaDeImagenes(boolean mod) {
+  private void ecualizacionHistograma() {
     if (this.imagenFocus == null) {
       mostrarError(22);
-    } else if (!this.imagenFocus.esGris()) {
+    } else if (!this.imagenFocus.esGris()){
       mostrarError(23);
-    } else if (this.listaImagenes.size() < 2) {
-      mostrarError(25);
     } else {
-      JFrame.setDefaultLookAndFeelDecorated(false);
-      new VentanaDiferenciaImagenes(this.idioma, this).setDiferencia(mod);
-      JFrame.setDefaultLookAndFeelDecorated(true);
+      VentanaImagen iFoc = this.imagenFocus;
+      iFoc.dibujarHistogramaAbsoluto(this.idioma.get("s_hAbsoluto") + " " + iFoc.getNombre());
+      iFoc.dibujarHistogramaAcumulativo(this.idioma.get("s_hAcumulativo") + " " + iFoc.getNombre());
+      
     }
+    
   }
   
   private void operacionGamma() {
@@ -839,6 +849,20 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     fGamma.setLocationRelativeTo(null);
     fGamma.setSize(300, 100);
     fGamma.setVisible(true);
+  }
+  
+  private void diferenciaDeImagenes(boolean mod) {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()) {
+      mostrarError(23);
+    } else if (this.listaImagenes.size() < 2) {
+      mostrarError(25);
+    } else {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      new VentanaDiferenciaImagenes(this.idioma, this).setDiferencia(mod);
+      JFrame.setDefaultLookAndFeelDecorated(true);
+    }
   }
   
   public void borrarVentana(int i) {

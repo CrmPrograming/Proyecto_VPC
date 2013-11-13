@@ -41,6 +41,7 @@ public interface Idiomas {
         put("s_dImagenes", "Diferencia de imágenes");
         put("s_mCambios", "Mapa de Cambios");
         put("s_gamma", "Correción Gamma");
+        put("s_eqHistograma", "Ecualización de Histograma");
         
         // Mensajes Menús
         
@@ -95,6 +96,7 @@ public interface Idiomas {
         put("s_dImagenes", "Differences between two images");
         put("s_mCambios", "Change's map");
         put("s_gamma", "Gamma Correction");
+        put("s_eqHistograma", "Histogram Equalization ");
         
         // Mensajes Menús
         

@@ -139,9 +139,14 @@ public class VentanaTransformacionTrozos extends JFrame implements ActionListene
       }
       
       if ("aceptar".equals(arg0.getActionCommand())) {
-        calcularNuevaImagen();
-        this.fGrafica.dispose();
-        this.dispose();  
+        try {
+          Double.parseDouble(this.vPuntos[0].getText());
+          calcularNuevaImagen();
+          this.fGrafica.dispose();
+          this.dispose(); 
+        } catch (NumberFormatException e) {
+          pPrincipal.mostrarError(24);
+        }         
       }
       
     }
