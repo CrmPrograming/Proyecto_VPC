@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -145,52 +147,32 @@ public class VentanaTransformacionTrozos extends JFrame implements ActionListene
     }
     
     private void calcularNuevaImagen() {
-      byte[] Pa = CDF();
-      int[] Vout = new int[256];
-      int aPrima = 0;
-      int b = 0;
-      int n = 0;
-      int[] vPunto = new int[nTramos + 1];
-      int[] vValor = new int[nTramos + 1];
-      
+      ArrayList<Point> listaPuntos = new ArrayList<Point>();
+      int tramoActual = 0;
+      final int MAX_PIXEL = 256;
+      int[] Vout = new int[MAX_PIXEL];
       for (int i = 0; i < nTramos; i++) {
-        vPunto[i] = Integer.parseInt(this.vPuntos[i].getText());
-        vValor[i] = Integer.parseInt(this.vValores[i].getText());
+        int q = Integer.parseInt(this.vPuntos[i].getText()); 
+        int a = Integer.parseInt(this.vValores[i].getText());
+        listaPuntos.add(new Point(q, a));
       }
-      vPunto[nTramos] = vValor[nTramos] = 255;      
-      for (int a = 0; a < 256; a++) {
-        b = Pa[a];
-        if (b <= vValor[0]) {
-          aPrima = 0;
-        } else if (b >= 1) {
-          aPrima = 255;
-        } else {
-          n = nTramos - 1;
-          while ((n >= 0) && (vValor[n] > b)) {
-            n--;
-          }
-          aPrima = vPunto[n] + (b - vValor[n]) * ((vPunto[n + 1]  - vPunto[n])/(vValor[n + 1]  - vValor[n]));
+      listaPuntos.add(new Point(255, 255));
+      Point pInicial = listaPuntos.get(tramoActual);
+      Point pFinal = listaPuntos.get(tramoActual + 1);
+      for (int a = 0; a < MAX_PIXEL; a++) {
+        double m = (pFinal.getY() - pInicial.getY()) / (pFinal.getX() - pInicial.getX());
+        double n = pInicial.getY() - (pInicial.getX() * m);
+        Vout[a] = (int) ((m * a) + n);
+        if ((a == pFinal.getX() - 1) && (a != MAX_PIXEL - 2)) {
+          tramoActual++;
+          pInicial = listaPuntos.get(tramoActual);
+          pFinal = listaPuntos.get(tramoActual + 1);
         }
-        Vout[a] = aPrima;
-      }
+      }      
       pPrincipal.duplicarImagen();
       pPrincipal.getImgFoco().ajustarPixels(Vout);
     }
-    
-    private byte[] CDF() {
-      byte[] aux = new byte[256];
-      int n = 0;
-      int c = 0;
-      int[] nGris = pPrincipal.getImgFoco().getNivelGris();
-      for (int i = 0; i < 256; i++)
-        n += nGris[i];
-      for (int i = 0; i < 256; i++) {
-        c += nGris[i];
-        aux[i] = (byte) (c / n);
-      }
-      return (aux);
-    }
-    
+        
     private class PanelGrafica extends JPanel {
       
       private Timer temporizador;
