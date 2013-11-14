@@ -39,7 +39,7 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
   private boolean diferencia;
 
   public VentanaDiferenciaImagenes(HashMap<String, String> idioma, PanelPrincipal panelPrincipal) {
-    super("Diferencia de Imágenes");
+    super(idioma.get("s_dImagenes"));
     this.pPrincipal = panelPrincipal;
     this.idioma = idioma;    
     JPanel panelVentana = new JPanel(new BorderLayout());

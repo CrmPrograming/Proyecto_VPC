@@ -251,6 +251,13 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.addActionListener(this);
     subMenu.add(menuItem);
     
+    menuItem = new JMenuItem(this.idioma.get("s_espHistograma"));
+    menuItem.setMnemonic(KeyEvent.VK_H);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("espHistograma");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);
+    
     menuItem = new JMenuItem(this.idioma.get("s_gamma"));
     menuItem.setMnemonic(KeyEvent.VK_G);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
@@ -431,6 +438,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("mCambios".equals(arg0.getActionCommand())) {
       diferenciaDeImagenes(true);
+    }
+    if ("espHistograma".equals(arg0.getActionCommand())) {
+      especificacionHistograma();
     }
   }
   
@@ -906,6 +916,20 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     } else {
       JFrame.setDefaultLookAndFeelDecorated(false);
       new VentanaDiferenciaImagenes(this.idioma, this).setDiferencia(mod);
+      JFrame.setDefaultLookAndFeelDecorated(true);
+    }
+  }
+  
+  private void especificacionHistograma() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()) {
+      mostrarError(23);
+    } else if (this.listaImagenes.size() < 2) {
+      mostrarError(25);
+    } else {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      new VentanaEspecificacionHistograma(this.idioma, this);
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
   }

@@ -80,8 +80,7 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
     
   }
   
-  private void construirTabla() {
-    
+  private void construirTabla() {    
     Double nContraste = Double.parseDouble(this.tfContraste.getText());
     nContraste /= panelPrincipal.getImgFoco().getContraste();
     Double nBrillo = Double.parseDouble(this.tfBrillo.getText());
