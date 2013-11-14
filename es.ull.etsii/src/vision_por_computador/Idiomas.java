@@ -33,7 +33,7 @@ public interface Idiomas {
         put("s_entropia", "Entropía");
         put("s_iImagen", "Información Imagen");
         put("s_duplicar", "Duplicar");
-        put("s_cEscalaGrices", "Cambiar a escala de Grices");
+        put("s_cEscalaGrises", "Cambiar a escala de Grises");
         put("s_acerca", "Acerca de");
         put("s_oLineales", "Operaciones Lineales");
         put("s_aBrilloContraste", "Ajuste lineal del brillo y contraste");
@@ -56,7 +56,7 @@ public interface Idiomas {
         
         put("e_solotif", "Sólo se admiten ficheros de tipo '.tif'");  // 21
         put("e_iAbierta", "No se puede realizar esta operación sin imágenes abiertas");  // 22
-        put("e_iGris", "Operación sólo para imágenes en escala de grices");   // 23   
+        put("e_iGris", "Operación sólo para imágenes en escala de grises");   // 23   
         put("e_fNumerico", "El valor dado debe ser un número"); // 24
         put("e_mImagenes", "No se puede realizar esta operación sin tener 2 imágenes abiertas como mínimo");
       }}));
@@ -89,7 +89,7 @@ public interface Idiomas {
         put("s_entropia", "Entropy");
         put("s_iImagen", "Image info");
         put("s_duplicar", "Duplicate");
-        put("s_cEscalaGrices", "Change to Grayscale");
+        put("s_cEscalaGrises", "Change to Grayscale");
         put("s_acerca", "About");
         put("s_oLineales", "Lineal Operations");
         put("s_aBrilloContraste", "Brightness and Contrast lineal adjust");

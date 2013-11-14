@@ -14,6 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class VentanaEspecificacionHistograma extends JFrame implements ActionListener {
 
   private HashMap<String, String> idioma;

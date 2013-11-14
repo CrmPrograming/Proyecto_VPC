@@ -59,7 +59,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   private String ruta;
   /**
    * Variable booleana la cual indica si la imagen
-   * est&aacute; en escala de grices o no
+   * est&aacute; en escala de grises o no
    */
   private boolean escalaGris;
   /**
@@ -140,7 +140,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
         panelPrincipal.borrarVentana(i);
         panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() - 1);
         debug.escribirMensaje("> Cerrada la imagen " + nombre);
-        panelPrincipal.setFocus(null);        
+        panelPrincipal.setFocus(null);          
       }
       
       /**
@@ -156,6 +156,10 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
       
     });
     this.copiaStatica = this;
+    Color aux = new Color(this.bufferImagen.getRGB(0, 0));
+    if ((aux.getRed() == aux.getBlue()) && (aux.getRed() == aux.getGreen())) {
+      this.fijarGris(true);
+    }
   }
   
   public void run() {
@@ -254,7 +258,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
                                                   nuevaRuta);   
               panelPrincipal.getListaImagenes().add(aux);
               panelPrincipal.add(aux);
-              debug.escribirMensaje("> Se ha cambiado a escala de grices la imagen en foco");
+              debug.escribirMensaje("> Se ha cambiado a escala de grises la imagen en foco");
               panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);
               aux.fijarGris(true);
               panelPrincipal.setFocus(aux);

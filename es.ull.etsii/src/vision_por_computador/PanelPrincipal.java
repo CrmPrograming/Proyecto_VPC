@@ -209,7 +209,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
-    menuItem = new JMenuItem(this.idioma.get("s_cEscalaGrices"));
+    menuItem = new JMenuItem(this.idioma.get("s_cEscalaGrises"));
     menuItem.setMnemonic(KeyEvent.VK_G);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("cambiarGris");
@@ -702,7 +702,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
                                             nuevaRuta);   
       this.listaImagenes.add(aux);
       this.add(aux);
-      this.debug.escribirMensaje("> Se ha cambiado a escala de grices la imagen en foco");
+      this.debug.escribirMensaje("> Se ha cambiado a escala de grises la imagen en foco");
       this.cantidadImagenes++;
       aux.fijarGris(true);
       this.imagenFocus = aux;

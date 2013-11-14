@@ -141,11 +141,10 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
       BufferedImage imagenNueva = new BufferedImage(imagenOriginal.getWidth(), imagenOriginal.getHeight(), BufferedImage.TYPE_INT_RGB);
       for (int i = 0; i < imagenNueva.getWidth(); i++) {
         for (int j = 0; j < imagenNueva.getHeight(); j++) {
-          Color auxColor = new Color(imagenOriginal.getRGB(i, j));
-          if (this.result[i][j] > 0) {
-            auxColor = Color.RED;
-          }
-          imagenNueva.setRGB(i, j, auxColor.getRGB());
+          int result = this.result[i][j] << 16; // Red
+          result += this.result[i][j] << 8;     // Green
+          result += this.result[i][j];          // Blue
+          imagenNueva.setRGB(i, j, result);
         }
       }
       VentanaImagen aux = new VentanaImagen(pPrincipal.getCantidadImagenes(), 
