@@ -22,6 +22,11 @@ import org.jfree.data.category.DefaultCategoryDataset;
 @SuppressWarnings("serial")
 public class HistogramaAbsoluto extends JFrame {
   
+  /**
+   * Vector de tipo int con los
+   * niveles calculados de una imagen
+   * 
+   */
   private int[] nGris;
   
   /**

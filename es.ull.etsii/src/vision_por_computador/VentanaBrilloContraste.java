@@ -20,20 +20,45 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
    * Constante con el ancho de esta ventana
    */
   private final int ANCHO = 300;
+  
   /**
    * Constante con el alto de esta ventana
    */
   private final int ALTO = 100;
+  
+  /**
+   * Tabla Hash para los mensajes en el idioma actual
+   */
   private HashMap<String, String> idioma;
+  
+  /**
+   * Instancia del PanelPrincipal de la aplicaci&oacute;n
+   */
   private PanelPrincipal panelPrincipal;
+  
+  /**
+   * JButton del bot&oacute;n Aceptar del JFrame
+   */
   private JButton bAceptar;
+  
+  /**
+   * JButton del bot&oacute;n Cancelar del JFrame
+   */
   private JButton bCancelar;
+
   private JTextField tfBrillo;
   private JTextField tfContraste;
   private JLabel lBrillo;
   private JLabel lContraste;
   private int[] tVout = new int[256];
 
+  /**
+   * Instancia un nuevo objeto
+   * de tipo ventana brillo contraste.
+   *
+   * @param idioma the idioma
+   * @param pPrincipal the principal
+   */
   public VentanaBrilloContraste(HashMap<String, String> idioma, PanelPrincipal pPrincipal) {
     super("Ajuste de Brillo y Contraste");  
     final int COLUMNAS = 3;
@@ -67,6 +92,11 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
     this.setResizable(false);
   }
 
+  /**
+   * Action performed.
+   *
+   * @param arg0 the arg0
+   */
   @Override
   public void actionPerformed(ActionEvent arg0) {
     if ("aceptar".equals(arg0.getActionCommand())) {
@@ -80,6 +110,9 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
     
   }
   
+  /**
+   * Construir tabla.
+   */
   private void construirTabla() {    
     Double nContraste = Double.parseDouble(this.tfContraste.getText());
     nContraste /= panelPrincipal.getImgFoco().getContraste();
@@ -94,6 +127,9 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
     }
   }
   
+  /**
+   * Crear nueva imagen.
+   */
   private void crearNuevaImagen() {
     this.panelPrincipal.duplicarImagen();
     this.panelPrincipal.getImgFoco().ajustarPixels(this.tVout);

@@ -93,7 +93,6 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
    * @param bImage Imagen a mostrar en memoria
    * @param nombreImagen Nombre de la imagen
    * @param debg Instanciaci&oacute;n de la VentanaDebug
-   * @param listaImagenes Lista de im&aacute;genes abiertas actualmente
    * @param pPrincipal Instanciaci&oacute;n del panel principal
    * @param path Ruta de la imagen 
    */

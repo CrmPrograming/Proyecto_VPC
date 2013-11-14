@@ -89,6 +89,12 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
    */
   private VentanaImagen imagenFocus;
   
+  /**
+   * Objeto de la clase Color con el color actual
+   * de la interfaz
+   * 
+   * @see Color
+   */
   private Color colorElementos;
 
   /**
@@ -358,6 +364,16 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   *  M&eacute;todo encargado de comprobar que
+   *  un color no supere los rangos [0, 255]
+   * 
+   *  @param r Color en canal Rojo
+   *  @param g Color en canal Verde
+   *  @param b Color en canal Azul
+   *  @since  1.0
+   *
+   */
   private void comprobarColores(int r, int g, int b) throws Exception {
     if ((r > 255) || (r < 0)) {
       throw new Exception();
@@ -769,6 +785,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   *  M&eacute;todo encargado de mostrar
+   *  la entrop&iacute;a de la imagen
+   *  en foco
+   * 
+   *  @since  1.0
+   *
+   */
   private void mostrarEntropia() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -784,6 +808,15 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   *  M&eacute;todo encargado de abrir el
+   *  JFrame en el cual se realiza la operaci&oacute;n
+   *  de ajustar el brillo y el contraste de la imagen
+   *  en foco
+   *  
+   *  @since  1.0
+   *
+   */
   private void ajusteBrilloContraste() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -796,6 +829,15 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   *  M&eacute;todo encargado de abrir el
+   *  JFrame en el cual se realiza la operaci&oacute;n
+   *  de transformaci&oacute;n lineal a tramos de la imagen
+   *  en foco
+   *  
+   *  @since  1.0
+   *
+   */
   private void transformacionLinealTramos() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -808,6 +850,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   } 
   
+  /**
+   *  M&eacute;todo encargado de realizar la operaci&oacute;n
+   *  de ecualizaci&oacute;n del histograma de la imagen
+   *  en foco
+   *  
+   *  @since  1.0
+   *
+   */
   private void ecualizacionHistograma() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -857,7 +907,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       aux.fijarGris(true);
       this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
       try {
-        Thread.sleep(1000);
+        Thread.sleep(500);
       } catch (Exception e) {
         
       }
@@ -867,6 +917,13 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     
   }
   
+  /**
+   *  M&eacute;todo encargado de realizar la operaci&oacute;n
+   *  gamma de la imagen en foco
+   *  
+   *  @since  1.0
+   *
+   */
   private void operacionGamma() {
     final JFrame fGamma = new JFrame(this.idioma.get("s_gamma"));
     JPanel panelVentana = new JPanel(new BorderLayout());
@@ -881,6 +938,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       public void actionPerformed(ActionEvent arg0) {
         try {
         imagenFocus.operacionGamma(Double.parseDouble(tfValor.getText()));
+        debug.escribirMensaje("> Se ha mostrado la operación gamma");        
         } catch (NumberFormatException e) {
           mostrarError(24);
         }
@@ -906,6 +964,15 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     fGamma.setVisible(true);
   }
   
+  /**
+   *  M&eacute;todo encargado de abrir el
+   *  JFrame en el cual se realiza la operaci&oacute;n
+   *  de diferencia de im&aacute;genes y mapa de cambios
+   *  
+   *  @param mod variable booleana indicando si se calcula la diferencia o el mapa
+   *  @since  1.0
+   *
+   */
   private void diferenciaDeImagenes(boolean mod) {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -920,6 +987,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   *  M&eacute;todo encargado de abrir el
+   *  JFrame en el cual se realiza la operaci&oacute;n
+   *  de especificaci&oacute;n del histograma
+   *  
+   *  @since  1.0
+   *
+   */
   private void especificacionHistograma() {
     if (this.imagenFocus == null) {
       mostrarError(22);
@@ -934,6 +1009,13 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
   }
   
+  /**
+   *  M&eacute;todo encargado de borrar una
+   *  imagen de la lista de im&aacute;genes
+   *  
+   *  @since  1.0
+   *
+   */
   public void borrarVentana(int i) {
     this.listaImagenes.remove(i);
   }
@@ -948,6 +1030,15 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     this.imagenFocus = vI;
   }
   
+  /**
+   *  M&eacute;todo getter para obtener
+   *  la imagen en foco en el momento que
+   *  se usa
+   *  
+   *  @return imagenFocus la imagen en foco
+   *  @since  1.0
+   *
+   */
   public VentanaImagen getImgFoco() {
     return (this.imagenFocus);
   }
@@ -972,18 +1063,50 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     return this.cantidadImagenes;
   }
   
+  /**
+   *  M&eacute;todo getter para el atributo
+   *  colorElementos
+   *  
+   *  @return colorElementos
+   *  @since  1.0
+   *
+   */
   public Color getElemColor() {
     return this.colorElementos;
   }
   
+  /**
+   *  M&eacute;todo setter para el atributo
+   *  colorElementos
+   *  
+   *  @param nColor
+   *  @since  1.0
+   *
+   */
   public void setElemColor(Color nColor) {
     this.colorElementos = nColor;
   }
   
+  /**
+   *  M&eacute;todo getter para el atributo
+   *  listaImagenes
+   *  
+   *  @return listaImagen
+   *  @since  1.0
+   *
+   */
   public ArrayList<VentanaImagen> getListaImagenes() {
     return (this.listaImagenes);
   }
   
+  /**
+   *  M&eacute;todo getter para el atributo
+   *  debug
+   *  
+   *  @return debug
+   *  @since  1.0
+   *
+   */
   public VentanaDebug getVentanaDebug() {
     return (this.debug);
   }
