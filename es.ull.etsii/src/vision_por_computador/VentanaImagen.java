@@ -462,6 +462,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
         this.bufferImagen.setRGB(i, j, result);
       }
     }
+    new Thread(this).start();
   }
   
   public void operacionGamma(double gamma) {
