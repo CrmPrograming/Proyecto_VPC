@@ -347,7 +347,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem = new JMenuItem(this.idioma.get("s_180"));
     menuItem.setMnemonic(KeyEvent.VK_1);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
-    menuItem.setActionCommand("espVertical");
+    menuItem.setActionCommand("s_180");
     menuItem.addActionListener(this);
     subMenu2.add(menuItem);
     
@@ -370,14 +370,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem = new JMenuItem(this.idioma.get("s_-180"));
     menuItem.setMnemonic(KeyEvent.VK_8);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_8, ActionEvent.ALT_MASK));
-    menuItem.setActionCommand("espVertical");
+    menuItem.setActionCommand("s_-180");
     menuItem.addActionListener(this);
     subMenu2.add(menuItem);
     
     menuItem = new JMenuItem(this.idioma.get("s_-270"));
     menuItem.setMnemonic(KeyEvent.VK_7);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_7, ActionEvent.ALT_MASK));
-    menuItem.setActionCommand("espVertical");
+    menuItem.setActionCommand("s_-270");
     menuItem.addActionListener(this);
     subMenu2.add(menuItem);
     
@@ -567,6 +567,15 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("s_90".equals(arg0.getActionCommand())) {
       rotacion(90);
+    }
+    if ("s_-270".equals(arg0.getActionCommand())) {
+      rotacion(-270);
+    }
+    if ("s_180".equals(arg0.getActionCommand())) {
+      rotacion(180);
+    }
+    if ("s_-180".equals(arg0.getActionCommand())) {
+      rotacion(-180);
     }
   }
   
@@ -1229,13 +1238,22 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   
   private void rotacion(int angulos) {
     switch (angulos) {
-      case 90:
-        rotacion90();
+      case 90:      
+        rotacion90("_90.");
+        break;
+      case -270:      
+        rotacion90("_-270.");
+        break;
+      case 180:      
+        rotacion180("_180.");
+        break;
+      case -180:      
+        rotacion180("_-180.");
         break;
     }
   }
   
-  private void rotacion90() {
+  private void rotacion90(String grado) {
     if (this.imagenFocus == null) {
       mostrarError(22);
     } else if (!this.imagenFocus.esGris()) {
@@ -1254,7 +1272,43 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       final String FORMATO_FICHERO = "tif";
       String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
       String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
-      String nuevoNombre = nombre[0] + "_90." + FORMATO_FICHERO; 
+      String nuevoNombre = nombre[0] + grado + FORMATO_FICHERO; 
+      String nuevaRuta = ruta[0] + nuevoNombre;      
+      VentanaImagen aux = new VentanaImagen(this.cantidadImagenes, 
+                                            imgNueva, 
+                                            nuevoNombre, 
+                                            this.debug, 
+                                            this,
+                                            nuevaRuta);   
+      this.listaImagenes.add(aux);
+      this.cantidadImagenes++;
+      this.add(aux);
+      aux.fijarGris(true);
+      this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
+      
+    }
+  }
+  
+  private void rotacion180(String grado) {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()) {
+      mostrarError(23);
+    } else {
+      VentanaImagen iFoc = this.imagenFocus;
+      BufferedImage imgFoc = iFoc.getImagen();
+      BufferedImage imgNueva = new BufferedImage(imgFoc.getWidth(), imgFoc.getHeight(), BufferedImage.TYPE_INT_RGB);
+      final int W = imgFoc.getWidth();
+      final int H = imgFoc.getHeight();
+      for (int i = 0; i < W; i++) {
+        for (int j = 0; j < H; j++) {
+          imgNueva.setRGB(W - 1 - i, H - 1 - j, imgFoc.getRGB(i, j));
+        }
+      }
+      final String FORMATO_FICHERO = "tif";
+      String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
+      String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
+      String nuevoNombre = nombre[0] + grado + FORMATO_FICHERO; 
       String nuevaRuta = ruta[0] + nuevoNombre;      
       VentanaImagen aux = new VentanaImagen(this.cantidadImagenes, 
                                             imgNueva, 
