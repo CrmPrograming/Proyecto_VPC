@@ -129,6 +129,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     JMenu menu = null;
     JMenuItem menuItem = null;
     JMenu subMenu = null;
+    JMenu subMenu2 = null;
     
     // Menu "Archivo"
     
@@ -287,25 +288,42 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     
     menu.add(subMenu);
     
-    // Submenu Transformaciones Espejo
+    // Submenu Operaciones Geométricas
     
-    subMenu = new JMenu(this.idioma.get("s_trasnEspejo"));
+    subMenu = new JMenu(this.idioma.get("s_opGeometricas"));
     subMenu.setMnemonic(KeyEvent.VK_T);
     subMenu.addActionListener(this);   
+    
+    // Submenu Transformaciones Espejo
+    
+    subMenu2 = new JMenu(this.idioma.get("s_trasnEspejo"));
+    subMenu2.setMnemonic(KeyEvent.VK_T);
+    subMenu2.addActionListener(this);   
     
     menuItem = new JMenuItem(this.idioma.get("s_espejoHorizontal"));
     menuItem.setMnemonic(KeyEvent.VK_H);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("espHorizontal");
     menuItem.addActionListener(this);
-    subMenu.add(menuItem);    
+    subMenu2.add(menuItem);    
     
     menuItem = new JMenuItem(this.idioma.get("s_espejoVertical"));
     menuItem.setMnemonic(KeyEvent.VK_V);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("espVertical");
     menuItem.addActionListener(this);
-    subMenu.add(menuItem);  
+    subMenu2.add(menuItem);  
+    
+    subMenu.add(subMenu2);   
+    
+    // Traspuesta de imagen
+    
+    menuItem = new JMenuItem(this.idioma.get("s_traspuesta"));
+    menuItem.setMnemonic(KeyEvent.VK_G);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("traspuestaImagen");
+    menuItem.addActionListener(this);
+    subMenu.add(menuItem);
     
     menu.add(subMenu);
     
@@ -485,6 +503,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("espVertical".equals(arg0.getActionCommand())) {
       espejoVertical();
+    }
+    if ("traspuestaImagen".equals(arg0.getActionCommand())) {
+      traspuestaImagen();
     }
   }
   
@@ -1093,6 +1114,42 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
       String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
       String nuevoNombre = nombre[0] + "_espejoVertical." + FORMATO_FICHERO; 
+      String nuevaRuta = ruta[0] + nuevoNombre;      
+      VentanaImagen aux = new VentanaImagen(this.cantidadImagenes, 
+                                            imgNueva, 
+                                            nuevoNombre, 
+                                            this.debug, 
+                                            this,
+                                            nuevaRuta);   
+      this.listaImagenes.add(aux);
+      this.cantidadImagenes++;
+      this.add(aux);
+      aux.fijarGris(true);
+      this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
+      
+    }
+  }
+  
+  private void traspuestaImagen() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()) {
+      mostrarError(23);
+    } else {
+      VentanaImagen iFoc = this.imagenFocus;
+      BufferedImage imgFoc = iFoc.getImagen();
+      BufferedImage imgNueva = new BufferedImage(imgFoc.getHeight(), imgFoc.getWidth(), BufferedImage.TYPE_INT_RGB);
+      final int W = imgFoc.getWidth();
+      final int H = imgFoc.getHeight();
+      for (int i = 0; i < W; i++) {
+        for (int j = 0; j < H; j++) {
+          imgNueva.setRGB(j, i, imgFoc.getRGB(i, j));
+        }
+      }
+      final String FORMATO_FICHERO = "tif";
+      String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
+      String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
+      String nuevoNombre = nombre[0] + "_traspuesta." + FORMATO_FICHERO; 
       String nuevaRuta = ruta[0] + nuevoNombre;      
       VentanaImagen aux = new VentanaImagen(this.cantidadImagenes, 
                                             imgNueva, 

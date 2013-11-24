@@ -43,9 +43,11 @@ public interface Idiomas {
         put("s_gamma", "Correción Gamma");
         put("s_eqHistograma", "Ecualización de Histograma");
         put("s_espHistograma", "Especificación de Histograma");
+        put("s_opGeometricas", "Operaciones Geométricas");
         put("s_trasnEspejo", "Transformaciones Espejo");
         put("s_espejoHorizontal", "Espejo Horizontal");
         put("s_espejoVertical", "Espejo Vertical");
+        put("s_traspuesta", "Traspuesta Imagen");
         
         // Mensajes Menús
         
@@ -102,9 +104,11 @@ public interface Idiomas {
         put("s_gamma", "Gamma Correction");
         put("s_eqHistograma", "Histogram Equalization ");
         put("s_espHistograma", "Histogram Specification");
+        put("s_opGeometricas", "Operaciones Geométricas");
         put("s_trasnEspejo", "Transformaciones Espejo");
         put("s_espejoHorizontal", "Espejo Horizontal");
         put("s_espejoVertical", "Espejo Vertical");
+        put("s_traspuesta", "Traspuesta Imagen");
         
         // Mensajes Menús
         
