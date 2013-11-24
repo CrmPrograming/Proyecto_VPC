@@ -48,6 +48,14 @@ public interface Idiomas {
         put("s_espejoHorizontal", "Espejo Horizontal");
         put("s_espejoVertical", "Espejo Vertical");
         put("s_traspuesta", "Traspuesta Imagen");
+        put("s_rotaciones", "Rotaciones");
+        put("s_m90", "Multiplo 90");
+        put("s_90", "+ 90º");
+        put("s_180", "+ 180º");
+        put("s_270", "+ 270º");
+        put("s_-90", "- 90º");
+        put("s_-180", "- 180º");
+        put("s_-270", "- 270º");
         
         // Mensajes Menús
         
@@ -109,6 +117,14 @@ public interface Idiomas {
         put("s_espejoHorizontal", "Espejo Horizontal");
         put("s_espejoVertical", "Espejo Vertical");
         put("s_traspuesta", "Traspuesta Imagen");
+        put("s_rotaciones", "Rotaciones");
+        put("s_m90", "Multiplo 90");
+        put("s_90", "+ 90º");
+        put("s_180", "+ 180º");
+        put("s_270", "+ 270º");
+        put("s_-90", "- 90º");
+        put("s_-180", "- 180º");
+        put("s_-270", "- 270º");
         
         // Mensajes Menús
         

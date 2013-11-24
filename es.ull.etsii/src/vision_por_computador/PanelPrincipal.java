@@ -327,6 +327,64 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     
     menu.add(subMenu);
     
+    // Rotaciones de imagen
+    
+    subMenu = new JMenu(this.idioma.get("s_rotaciones"));
+    subMenu.setMnemonic(KeyEvent.VK_T);
+    subMenu.addActionListener(this);
+    
+    subMenu2 = new JMenu(this.idioma.get("s_m90"));
+    subMenu2.setMnemonic(KeyEvent.VK_M);
+    subMenu2.addActionListener(this); 
+    
+    menuItem = new JMenuItem(this.idioma.get("s_270"));
+    menuItem.setMnemonic(KeyEvent.VK_2);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("espVertical");
+    menuItem.addActionListener(this);
+    subMenu2.add(menuItem); 
+    
+    menuItem = new JMenuItem(this.idioma.get("s_180"));
+    menuItem.setMnemonic(KeyEvent.VK_1);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("espVertical");
+    menuItem.addActionListener(this);
+    subMenu2.add(menuItem);
+    
+    menuItem = new JMenuItem(this.idioma.get("s_90"));
+    menuItem.setMnemonic(KeyEvent.VK_9);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_9, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("s_90");
+    menuItem.addActionListener(this);
+    subMenu2.add(menuItem);
+    
+    subMenu2.addSeparator();
+    
+    menuItem = new JMenuItem(this.idioma.get("s_-90"));
+    menuItem.setMnemonic(KeyEvent.VK_0);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("espVertical");
+    menuItem.addActionListener(this);
+    subMenu2.add(menuItem);
+    
+    menuItem = new JMenuItem(this.idioma.get("s_-180"));
+    menuItem.setMnemonic(KeyEvent.VK_8);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_8, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("espVertical");
+    menuItem.addActionListener(this);
+    subMenu2.add(menuItem);
+    
+    menuItem = new JMenuItem(this.idioma.get("s_-270"));
+    menuItem.setMnemonic(KeyEvent.VK_7);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_7, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("espVertical");
+    menuItem.addActionListener(this);
+    subMenu2.add(menuItem);
+    
+    subMenu.add(subMenu2);
+    
+    menu.add(subMenu);
+    
     // Menu "Ayuda"
     
     menu = new JMenu(this.idioma.get("c_ayuda"));
@@ -506,6 +564,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("traspuestaImagen".equals(arg0.getActionCommand())) {
       traspuestaImagen();
+    }
+    if ("s_90".equals(arg0.getActionCommand())) {
+      rotacion(90);
     }
   }
   
@@ -1165,6 +1226,51 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       
     }
   }
+  
+  private void rotacion(int angulos) {
+    switch (angulos) {
+      case 90:
+        rotacion90();
+        break;
+    }
+  }
+  
+  private void rotacion90() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()) {
+      mostrarError(23);
+    } else {
+      VentanaImagen iFoc = this.imagenFocus;
+      BufferedImage imgFoc = iFoc.getImagen();
+      BufferedImage imgNueva = new BufferedImage(imgFoc.getHeight(), imgFoc.getWidth(), BufferedImage.TYPE_INT_RGB);
+      final int W = imgFoc.getWidth();
+      final int H = imgFoc.getHeight();
+      for (int i = 0; i < W; i++) {
+        for (int j = 0; j < H; j++) {
+          imgNueva.setRGB(j, W - 1 - i, imgFoc.getRGB(i, j));
+        }
+      }
+      final String FORMATO_FICHERO = "tif";
+      String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
+      String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
+      String nuevoNombre = nombre[0] + "_90." + FORMATO_FICHERO; 
+      String nuevaRuta = ruta[0] + nuevoNombre;      
+      VentanaImagen aux = new VentanaImagen(this.cantidadImagenes, 
+                                            imgNueva, 
+                                            nuevoNombre, 
+                                            this.debug, 
+                                            this,
+                                            nuevaRuta);   
+      this.listaImagenes.add(aux);
+      this.cantidadImagenes++;
+      this.add(aux);
+      aux.fijarGris(true);
+      this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
+      
+    }
+  }
+  
   
   /**
    *  M&eacute;todo encargado de borrar una
