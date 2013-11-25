@@ -22,15 +22,18 @@ import java.util.HashMap;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -330,7 +333,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     // Rotaciones de imagen
     
     subMenu = new JMenu(this.idioma.get("s_rotaciones"));
-    subMenu.setMnemonic(KeyEvent.VK_T);
+    subMenu.setMnemonic(KeyEvent.VK_O);
     subMenu.addActionListener(this);
     
     subMenu2 = new JMenu(this.idioma.get("s_m90"));
@@ -384,6 +387,16 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     subMenu.add(subMenu2);
     
     menu.add(subMenu);
+    
+    // Escalado de imagen
+    
+    menuItem = new JMenuItem(this.idioma.get("s_escalado"));
+    menuItem.setMnemonic(KeyEvent.VK_C);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("s_escalado");
+    menuItem.addActionListener(this);
+    
+    menu.add(menuItem);
     
     // Menu "Ayuda"
     
@@ -582,6 +595,11 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     }
     if ("s_270".equals(arg0.getActionCommand())) {
       rotacion(270);
+    }
+    if ("s_escalado".equals(arg0.getActionCommand())) {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      escaladoImagen();
+      JFrame.setDefaultLookAndFeelDecorated(true);
     }
   }
   
@@ -1372,6 +1390,80 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       
     }
   }  
+  
+  private void escaladoImagen() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()) {
+      mostrarError(23);
+    } else {
+      final JFrame fVentana = new JFrame(this.idioma.get("s_escalado"));
+      JPanel pVentana = new JPanel(new BorderLayout());
+      JPanel pElementos = new JPanel(new BorderLayout());
+      JPanel pBotones = new JPanel();
+      JPanel pDatos = new JPanel();
+      JPanel pInterpolaciones = new JPanel();
+      JButton bAceptar = new JButton(this.idioma.get("mm_aceptar"));
+      JButton bCancelar = new JButton(this.idioma.get("mm_cancelar"));
+      final JTextField tfAncho = new JTextField(String.valueOf(this.imagenFocus.getImagen().getWidth()));
+      final JTextField tfAlto = new JTextField(String.valueOf(this.imagenFocus.getImagen().getHeight()));
+      JLabel lbAncho = new JLabel("Ancho: ");
+      JLabel lbAlto = new JLabel("Alto: ");
+      ButtonGroup grupo = new ButtonGroup();
+      final JRadioButton rbVecinos = new JRadioButton("Interpolación Vecino más próximo");
+      rbVecinos.setSelected(true);
+      rbVecinos.setActionCommand("vecinos");
+      JRadioButton rbBilineal = new JRadioButton("Interpolación Bilineal");
+      rbBilineal.setActionCommand("bilineal");
+      grupo.add(rbVecinos);
+      grupo.add(rbBilineal);
+      bCancelar.addActionListener(new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+          fVentana.dispose();
+        }
+      
+      });
+      bAceptar.addActionListener(new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+          try {
+            final int N_ANCHO = Integer.parseInt(tfAncho.getText()); 
+            final int N_ALTO = Integer.parseInt(tfAlto.getText());
+            if (rbVecinos.isSelected()) {
+              imagenFocus.escalarVecino(N_ANCHO, N_ALTO);
+            } else {
+              imagenFocus.escalarBilineal(N_ANCHO, N_ALTO);
+            }
+            fVentana.dispose();
+          } catch(NumberFormatException e) {
+            mostrarError(24);
+          }
+        }
+      
+      });
+      pDatos.add(lbAlto);
+      pDatos.add(tfAlto);
+      pDatos.add(lbAncho);
+      pDatos.add(tfAncho);
+      pInterpolaciones.add(rbVecinos);
+      pInterpolaciones.add(rbBilineal);
+      pElementos.add(pDatos, BorderLayout.NORTH);
+      pElementos.add(pInterpolaciones, BorderLayout.SOUTH);
+      pBotones.add(bAceptar);
+      pBotones.add(bCancelar);
+      pVentana.add(pElementos, BorderLayout.CENTER);
+      pVentana.add(pBotones, BorderLayout.SOUTH);
+      fVentana.setContentPane(pVentana);
+      fVentana.setSize(400, 125);
+      fVentana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      fVentana.setLocationRelativeTo(null);
+      fVentana.setResizable(false);
+      fVentana.setVisible(true);
+    }
+  }
   
   /**
    *  M&eacute;todo encargado de borrar una

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -483,6 +484,104 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   }
   
   /**
+   *  @param
+   *  @return
+   *  @since  1.0
+   *
+   */
+  public void escalarVecino(final int N_ANCHO, final int N_ALTO) {
+    VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
+    BufferedImage imgFoc = iFoc.getImagen();
+    BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
+    final double INDICE_X = imgFoc.getWidth() / N_ANCHO;
+    final double INDICE_Y = imgFoc.getHeight() / N_ALTO;    
+    for (int i = 0; i < N_ANCHO; i++) {
+      for (int j = 0; j < N_ALTO; j++) {
+        double x = INDICE_X * i;
+        double y = INDICE_Y * j;
+        final Point A = new Point((int) Math.round(x), (int) Math.ceil(y));
+        final Point B = new Point((int) Math.ceil(x), (int) Math.ceil(y));
+        final Point C = new Point((int) Math.ceil(x), (int) Math.round(y));
+        final Point D = new Point((int) Math.round(x), (int) Math.round(y));
+        imgNueva.setRGB(i, j, pixelCercano(x, y, A, B, C, D));
+      }
+    }
+    final String FORMATO_FICHERO = "tif";
+    String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
+    String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
+    String nuevoNombre = nombre[0] + "_escalada." + FORMATO_FICHERO; 
+    String nuevaRuta = ruta[0] + nuevoNombre;      
+    VentanaImagen aux = new VentanaImagen(this.panelPrincipal.getCantidadImagenes(), 
+                                          imgNueva, 
+                                          nuevoNombre, 
+                                          this.debug, 
+                                          this.panelPrincipal,
+                                          nuevaRuta);   
+    this.panelPrincipal.getListaImagenes().add(aux);
+    this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);    
+    this.panelPrincipal.add(aux);
+    aux.fijarGris(true);
+    this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");    
+  }
+  
+  private int pixelCercano(double x, double y, final Point ... PUNTOS) {
+    int pixel = 0;
+    double distancia = Double.MAX_VALUE;
+    double distanciaTemporal = 0d;
+    for (Point punto: PUNTOS) {
+      distanciaTemporal = Math.sqrt((Math.pow((punto.x - x), 2) + Math.pow((punto.y - y), 2)));
+      if (distanciaTemporal < distancia) {
+        distancia = distanciaTemporal;
+        pixel = this.bufferImagen.getRGB(punto.x, punto.y);
+      }
+    }    
+    return (pixel);
+  }
+  
+  public void escalarBilineal(final int N_ANCHO, final int N_ALTO) {
+    VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
+    BufferedImage imgFoc = iFoc.getImagen();
+    BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
+    final double INDICE_X = imgFoc.getWidth() / N_ANCHO;
+    final double INDICE_Y = imgFoc.getHeight() / N_ALTO;    
+    for (int i = 0; i < N_ANCHO; i++) {
+      for (int j = 0; j < N_ALTO; j++) {
+        double x = INDICE_X * i;
+        double y = INDICE_Y * j;        
+        final Point A = new Point((int) Math.round(x), (int) Math.ceil(y));
+        final Point B = new Point((int) Math.ceil(x), (int) Math.ceil(y));
+        final Point C = new Point((int) Math.round(x), (int) Math.round(y));
+        final Point D = new Point((int) Math.ceil(x), (int) Math.round(y));
+        double p = Math.abs(x - C.getX());
+        double q = Math.abs(y - C.getY());
+        int pixel = imgFoc.getRGB((int) C.getX(), (int) C.getY());
+        pixel += ((imgFoc.getRGB((int) D.getX(), (int) D.getY()) - pixel) * p) +
+                 ((imgFoc.getRGB((int) A.getX(), (int) A.getY()) - pixel) * q);
+        pixel += (imgFoc.getRGB((int) B.getX(), (int) B.getY()) + imgFoc.getRGB((int) C.getX(), (int) C.getY())) -
+                 (imgFoc.getRGB((int) A.getX(), (int) A.getY()) - imgFoc.getRGB((int) D.getX(), (int) D.getY()));
+        pixel *= p * q;
+        imgNueva.setRGB(i, j, pixel);
+      }
+    }
+    final String FORMATO_FICHERO = "tif";
+    String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
+    String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
+    String nuevoNombre = nombre[0] + "_escalada." + FORMATO_FICHERO; 
+    String nuevaRuta = ruta[0] + nuevoNombre;      
+    VentanaImagen aux = new VentanaImagen(this.panelPrincipal.getCantidadImagenes(), 
+                                          imgNueva, 
+                                          nuevoNombre, 
+                                          this.debug, 
+                                          this.panelPrincipal,
+                                          nuevaRuta);   
+    this.panelPrincipal.getListaImagenes().add(aux);
+    this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);    
+    this.panelPrincipal.add(aux);
+    aux.fijarGris(true);
+    this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");    
+  }
+  
+  /**
    * M&eacute;todo setter para cambiar 
    * el atributo id
    *
@@ -603,6 +702,6 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     desc += "- Entropía: " + this.entropia + "\n";
     desc += "- Min/Max: [" + this.valorMin + ", " + this.valorMax + "]\n";
     return (desc);
-  }
+  }  
 
 }

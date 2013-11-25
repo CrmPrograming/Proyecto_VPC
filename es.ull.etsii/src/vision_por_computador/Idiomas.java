@@ -56,6 +56,7 @@ public interface Idiomas {
         put("s_-90", "- 90º");
         put("s_-180", "- 180º");
         put("s_-270", "- 270º");
+        put("s_escalado", "Escalado de imagen");
         
         // Mensajes Menús
         
@@ -125,6 +126,7 @@ public interface Idiomas {
         put("s_-90", "- 90º");
         put("s_-180", "- 180º");
         put("s_-270", "- 270º");
+        put("s_escalado", "Escalado de imagen");
         
         // Mensajes Menús
         
