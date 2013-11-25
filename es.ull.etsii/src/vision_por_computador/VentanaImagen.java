@@ -493,17 +493,13 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
     BufferedImage imgFoc = iFoc.getImagen();
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
-    final double INDICE_X = imgFoc.getWidth() / N_ANCHO;
-    final double INDICE_Y = imgFoc.getHeight() / N_ALTO;    
+    final double INDICE_X = (double) imgFoc.getWidth() / (double) N_ANCHO;
+    final double INDICE_Y = (double) imgFoc.getHeight() / (double) N_ALTO;    
     for (int i = 0; i < N_ANCHO; i++) {
       for (int j = 0; j < N_ALTO; j++) {
         double x = INDICE_X * i;
         double y = INDICE_Y * j;
-        final Point A = new Point((int) Math.round(x), (int) Math.ceil(y));
-        final Point B = new Point((int) Math.ceil(x), (int) Math.ceil(y));
-        final Point C = new Point((int) Math.ceil(x), (int) Math.round(y));
-        final Point D = new Point((int) Math.round(x), (int) Math.round(y));
-        imgNueva.setRGB(i, j, pixelCercano(x, y, A, B, C, D));
+        imgNueva.setRGB(i,  j, imgFoc.getRGB((int) x, (int) y)); 
       }
     }
     final String FORMATO_FICHERO = "tif";
@@ -524,26 +520,12 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");    
   }
   
-  private int pixelCercano(double x, double y, final Point ... PUNTOS) {
-    int pixel = 0;
-    double distancia = Double.MAX_VALUE;
-    double distanciaTemporal = 0d;
-    for (Point punto: PUNTOS) {
-      distanciaTemporal = Math.sqrt((Math.pow((punto.x - x), 2) + Math.pow((punto.y - y), 2)));
-      if (distanciaTemporal < distancia) {
-        distancia = distanciaTemporal;
-        pixel = this.bufferImagen.getRGB(punto.x, punto.y);
-      }
-    }    
-    return (pixel);
-  }
-  
   public void escalarBilineal(final int N_ANCHO, final int N_ALTO) {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
     BufferedImage imgFoc = iFoc.getImagen();
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
-    final double INDICE_X = imgFoc.getWidth() / N_ANCHO;
-    final double INDICE_Y = imgFoc.getHeight() / N_ALTO;    
+    final double INDICE_X = (double) imgFoc.getWidth() / (double) N_ANCHO;
+    final double INDICE_Y = (double) imgFoc.getHeight() / (double) N_ALTO;    
     for (int i = 0; i < N_ANCHO; i++) {
       for (int j = 0; j < N_ALTO; j++) {
         double x = INDICE_X * i;
