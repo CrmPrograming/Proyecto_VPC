@@ -133,6 +133,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     JMenuItem menuItem = null;
     JMenu subMenu = null;
     JMenu subMenu2 = null;
+    JMenu subMenu3 = null;
     
     // Menu "Archivo"
     
@@ -328,65 +329,63 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.addActionListener(this);
     subMenu.add(menuItem);
     
-    menu.add(subMenu);
+// Rotaciones de imagen
     
-    // Rotaciones de imagen
+    subMenu2 = new JMenu(this.idioma.get("s_rotaciones"));
+    subMenu2.setMnemonic(KeyEvent.VK_O);
+    subMenu2.addActionListener(this);
     
-    subMenu = new JMenu(this.idioma.get("s_rotaciones"));
-    subMenu.setMnemonic(KeyEvent.VK_O);
-    subMenu.addActionListener(this);
-    
-    subMenu2 = new JMenu(this.idioma.get("s_m90"));
-    subMenu2.setMnemonic(KeyEvent.VK_M);
-    subMenu2.addActionListener(this); 
+    subMenu3 = new JMenu(this.idioma.get("s_m90"));
+    subMenu3.setMnemonic(KeyEvent.VK_M);
+    subMenu3.addActionListener(this); 
     
     menuItem = new JMenuItem(this.idioma.get("s_270"));
     menuItem.setMnemonic(KeyEvent.VK_2);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("s_270");
     menuItem.addActionListener(this);
-    subMenu2.add(menuItem); 
+    subMenu3.add(menuItem); 
     
     menuItem = new JMenuItem(this.idioma.get("s_180"));
     menuItem.setMnemonic(KeyEvent.VK_1);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("s_180");
     menuItem.addActionListener(this);
-    subMenu2.add(menuItem);
+    subMenu3.add(menuItem);
     
     menuItem = new JMenuItem(this.idioma.get("s_90"));
     menuItem.setMnemonic(KeyEvent.VK_9);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_9, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("s_90");
     menuItem.addActionListener(this);
-    subMenu2.add(menuItem);
+    subMenu3.add(menuItem);
     
-    subMenu2.addSeparator();
+    subMenu3.addSeparator();
     
     menuItem = new JMenuItem(this.idioma.get("s_-90"));
     menuItem.setMnemonic(KeyEvent.VK_0);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("s_-90");
     menuItem.addActionListener(this);
-    subMenu2.add(menuItem);
+    subMenu3.add(menuItem);
     
     menuItem = new JMenuItem(this.idioma.get("s_-180"));
     menuItem.setMnemonic(KeyEvent.VK_8);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_8, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("s_-180");
     menuItem.addActionListener(this);
-    subMenu2.add(menuItem);
+    subMenu3.add(menuItem);
     
     menuItem = new JMenuItem(this.idioma.get("s_-270"));
     menuItem.setMnemonic(KeyEvent.VK_7);
     menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_7, ActionEvent.ALT_MASK));
     menuItem.setActionCommand("s_-270");
     menuItem.addActionListener(this);
-    subMenu2.add(menuItem);
+    subMenu3.add(menuItem);
+    
+    subMenu2.add(subMenu3);
     
     subMenu.add(subMenu2);
-    
-    menu.add(subMenu);
     
     // Escalado de imagen
     
@@ -396,7 +395,9 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.setActionCommand("s_escalado");
     menuItem.addActionListener(this);
     
-    menu.add(menuItem);
+    subMenu.add(menuItem);
+    
+    menu.add(subMenu);
     
     // Menu "Ayuda"
     
