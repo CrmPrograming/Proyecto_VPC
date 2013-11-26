@@ -493,13 +493,28 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
     BufferedImage imgFoc = iFoc.getImagen();
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
-    final double INDICE_X = (double) imgFoc.getWidth() / (double) N_ANCHO;
-    final double INDICE_Y = (double) imgFoc.getHeight() / (double) N_ALTO;    
+    final double W = imgFoc.getWidth();
+    final double H = imgFoc.getHeight();
+    final double INDICE_X = (double) W / (double) N_ANCHO;
+    final double INDICE_Y = (double) H / (double) N_ALTO; 
     for (int i = 0; i < N_ANCHO; i++) {
       for (int j = 0; j < N_ALTO; j++) {
         double x = INDICE_X * i;
         double y = INDICE_Y * j;
-        imgNueva.setRGB(i,  j, imgFoc.getRGB((int) x, (int) y)); 
+        double w = Math.round(x) + 1;
+        double v = Math.round(y) + 1;
+        if (w >= W) {
+          w = imgFoc.getWidth() - 2;
+        }
+        if (v >= H) {
+          v = imgFoc.getHeight() - 2;
+        }        
+        final Point A = new Point((int) x, (int) v);
+        final Point B = new Point((int) w, (int) v);
+        final Point C = new Point((int) x, (int) y);
+        final Point D = new Point((int) w, (int) y);
+        
+        imgNueva.setRGB(i,  j, pixelVecino(x, y, A, B, C, D)); 
       }
     }
     final String FORMATO_FICHERO = "tif";
@@ -520,29 +535,45 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");    
   }
   
+  private int pixelVecino(double x, double y, final Point ... PUNTOS) {
+    int pixel = 0;
+    double distancia = Double.MAX_VALUE;
+    double distanciaTemporal = 0d;
+    for (Point punto: PUNTOS) {
+      distanciaTemporal = Math.sqrt(Math.pow(punto.getX() - x, 2) + Math.pow(punto.getY() - y, 2));
+      if (distanciaTemporal < distancia) {
+        distancia = distanciaTemporal;
+        pixel = this.bufferImagen.getRGB((int) punto.getX(), (int) punto.getY());
+      }
+    }
+    return (pixel);
+  }
+  
   public void escalarBilineal(final int N_ANCHO, final int N_ALTO) {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
     BufferedImage imgFoc = iFoc.getImagen();
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
-    final double INDICE_X = (double) imgFoc.getWidth() / (double) N_ANCHO;
-    final double INDICE_Y = (double) imgFoc.getHeight() / (double) N_ALTO;    
+    final int W = imgFoc.getWidth();
+    final int H = imgFoc.getHeight();
+    final double INDICE_X = (double) W / (double) N_ANCHO;
+    final double INDICE_Y = (double) H / (double) N_ALTO;    
     for (int i = 0; i < N_ANCHO; i++) {
       for (int j = 0; j < N_ALTO; j++) {
         double x = INDICE_X * i;
-        double y = INDICE_Y * j;        
-        final Point A = new Point((int) Math.round(x), (int) Math.ceil(y));
-        final Point B = new Point((int) Math.ceil(x), (int) Math.ceil(y));
-        final Point C = new Point((int) Math.round(x), (int) Math.round(y));
-        final Point D = new Point((int) Math.ceil(x), (int) Math.round(y));
-        double p = Math.abs(x - C.getX());
-        double q = Math.abs(y - C.getY());
-        int pixel = imgFoc.getRGB((int) C.getX(), (int) C.getY());
-        pixel += ((imgFoc.getRGB((int) D.getX(), (int) D.getY()) - pixel) * p) +
-                 ((imgFoc.getRGB((int) A.getX(), (int) A.getY()) - pixel) * q);
-        pixel += (imgFoc.getRGB((int) B.getX(), (int) B.getY()) + imgFoc.getRGB((int) C.getX(), (int) C.getY())) -
-                 (imgFoc.getRGB((int) A.getX(), (int) A.getY()) - imgFoc.getRGB((int) D.getX(), (int) D.getY()));
-        pixel *= p * q;
-        imgNueva.setRGB(i, j, pixel);
+        double y = INDICE_Y * j;   
+        double w = Math.round(x) + 1;
+        double v = Math.round(y) + 1;
+        if (w >= W) {
+          w = imgFoc.getWidth() - 2;
+        }
+        if (v >= H) {
+          v = imgFoc.getHeight() - 2;
+        }        
+        final Point A = new Point((int) x, (int) v);
+        final Point B = new Point((int) w, (int) v);
+        final Point C = new Point((int) x, (int) y);
+        final Point D = new Point((int) w, (int) y);
+        imgNueva.setRGB(i, j, calcularPixel(imgFoc, x, y, A, B, C, D));
       }
     }
     final String FORMATO_FICHERO = "tif";
@@ -561,6 +592,28 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.panelPrincipal.add(aux);
     aux.fijarGris(true);
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");    
+  }
+  
+  private int calcularPixel(BufferedImage imgFoc, double x, double y, Point A, Point B, Point C, Point D) {
+    int pixel = 0;
+    double p = Math.abs(x - C.getX());
+    double q = Math.abs(y - C.getY());
+    double w = p * q;
+    // punto1 == C + (D - C)p
+    Point punto1 = new Point((int) (D.getX() - C.getX()), (int) (D.getY() - C.getY()));
+    punto1 = new Point((int) (punto1.getX() * p), (int) (punto1.getY() * p));
+    punto1 = new Point((int) (punto1.getX() + C.getX()), (int) (punto1.getY() + C.getY()));
+    // punto2 == punto1 + (A - C)q
+    Point punto2 = new Point((int) (A.getX() - C.getX()), (int) (A.getY() - C.getY()));
+    punto2 = new Point((int) (punto2.getX() * q), (int) (punto2.getY() * q));
+    punto2 = new Point((int) (punto1.getX() + punto2.getX()), (int) (punto1.getY() + punto2.getY()));
+    // punto3 == punto2 + (B + C - A - D)pq
+    Point punto3 = new Point((int) (B.getX() + (C.getX() - A.getX() - D.getX())), 
+                             (int) (B.getY() + (C.getY() - A.getY() - D.getY())));
+    punto3 = new Point((int) (punto3.getX() * w), (int) (punto3.getY() * w));
+    punto3 = new Point((int) (punto3.getX() + punto2.getX()), (int) (punto3.getY() + punto2.getY()));
+    pixel = this.bufferImagen.getRGB((int) punto3.getX(), (int) punto3.getY());
+    return (pixel);
   }
   
   /**
