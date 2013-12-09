@@ -622,36 +622,35 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     final double W = imgFoc.getWidth();
     final double H = imgFoc.getHeight();
     ArrayList<Matriz> extremos = calcularExtremos(ANGULO, W, H);
-    Matriz trigo = new Matriz(new double[][] {{Math.cos(ANGULO), - Math.sin(ANGULO)},
-                                             { Math.sin(ANGULO), Math.cos(ANGULO)}});
+    final double ANGULO_RADIANES = Math.toRadians(ANGULO);
+    
+    Matriz trigo = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
+                                             { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
     final int N_ANCHO = calcularMaximo(extremos, 0);
     final int N_ALTO = calcularMaximo(extremos, 1);
     
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
-     
-    for (int i = 0; i < N_ANCHO; i++) {
+    
+    Matriz oOrigen = new Matriz(new double[][] {{0d}, {0d}});
+    oOrigen = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), Math.sin(ANGULO_RADIANES)},
+                                       {- Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}}).producto(oOrigen);
+    final Vector OP_OR = new Vector(new Point(0, 0), new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]));
+    
+    for (int i = 0; i < N_ANCHO; i++)
       for (int j = 0; j < N_ALTO; j++) {
-        double[][] coordenadas = calcularCoordenadas(i, j, trigo);
-        double x = coordenadas[0][0];
-        double y = coordenadas[1][0];
-        double w = Math.round(x) + 1;
-        double v = Math.round(y) + 1;
-        if (w >= W) {
-          w = imgFoc.getWidth() - 2;
+        final Matriz aux = new Matriz(new double[][] {{i}, {j}});
+        final Matriz p = trigo.producto(aux);
+        final Vector OP_PP = new Vector(new Point(0, 0), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
+        final Vector OR_PP = OP_PP.restaVectores(OP_OR);        
+        final Point pixel = OR_PP.getDestino();
+        if ((pixel.getX() > W) || (pixel.getX() < 0)
+          || (pixel.getY() > H) || (pixel.getY() < 0)) {
+          imgNueva.setRGB(i, j, Color.RED.getRGB());
+        } else {
+          imgNueva.setRGB(i, j, Color.BLACK.getRGB());
         }
-        if (v >= H) {
-          v = imgFoc.getHeight() - 2;
-        }
-        
-        
-        final Point A = new Point((int) x, (int) v);
-        final Point B = new Point((int) w, (int) v);
-        final Point C = new Point((int) x, (int) y);
-        final Point D = new Point((int) w, (int) y);       
-        
-        imgNueva.setRGB(i,  j, pixelVecino(x, y, A, B, C, D)); 
-      }
-    }
+      }    
+    
     final String FORMATO_FICHERO = "tif";
     String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
     String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
@@ -689,20 +688,31 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   
   private int calcularMaximo(ArrayList<Matriz> extr,int opc) {
     int result = 0;
+    int maximo = Integer.MIN_VALUE;
+    int minimo = Integer.MAX_VALUE;
     // opc == 0 -> x, opc == 1 -> y
     if (opc == 0) {
       for (Matriz T: extr) {
-        if (T.getMatriz()[0][0] > result) {
-          result = (int) T.getMatriz()[0][0];
+        if (T.getMatriz()[0][0] > maximo) {
+          maximo = (int) T.getMatriz()[0][0];
+        }
+        if (T.getMatriz()[0][0] < minimo) {
+          minimo = (int) T.getMatriz()[0][0];
         }
       }
     } else {
       for (Matriz T: extr) {
-        if (T.getMatriz()[1][0] > result) {
-          result = (int) T.getMatriz()[1][0];
+        if (T.getMatriz()[1][0] > maximo) {
+          maximo = (int) T.getMatriz()[1][0];
+        }
+        if (T.getMatriz()[1][0] < minimo) {
+          minimo = (int) T.getMatriz()[1][0];
         }
       }
     }
+    maximo = Math.abs(maximo);
+    minimo = Math.abs(minimo);
+    result = maximo + minimo;
     return (result);
   }
   
@@ -710,6 +720,10 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     double[][] result = null;
     Matriz aux = new Matriz(new double[][] {{i}, {j}});
     return (result);
+  }
+  
+  private Point sumarPoints(Point a, Point b) {
+    return (new Point((int) (a.getX() + b.getX()), (int) (a.getY() + b.getY())));
   }
   
   /**
