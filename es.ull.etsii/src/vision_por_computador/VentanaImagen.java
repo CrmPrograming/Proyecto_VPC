@@ -632,15 +632,15 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
     
     Matriz oOrigen = new Matriz(new double[][] {{0d}, {0d}});
-    oOrigen = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), Math.sin(ANGULO_RADIANES)},
-                                       {- Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}}).producto(oOrigen);
-    final Vector OP_OR = new Vector(new Point(0, 0), new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]));
+    oOrigen = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
+                                        { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}}).producto(oOrigen);
+    final Vector OP_OR = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point(0, 0));
     
     for (int i = 0; i < N_ANCHO; i++)
       for (int j = 0; j < N_ALTO; j++) {
         final Matriz aux = new Matriz(new double[][] {{i}, {j}});
         final Matriz p = trigo.producto(aux);
-        final Vector OP_PP = new Vector(new Point(0, 0), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
+        final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
         final Vector OR_PP = OP_PP.restaVectores(OP_OR);        
         final Point pixel = OR_PP.getDestino();
         if ((pixel.getX() > W) || (pixel.getX() < 0)
