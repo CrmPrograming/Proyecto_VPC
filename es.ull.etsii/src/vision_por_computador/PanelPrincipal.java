@@ -329,7 +329,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     menuItem.addActionListener(this);
     subMenu.add(menuItem);
     
-// Rotaciones de imagen
+    // Rotaciones de imagen
     
     subMenu2 = new JMenu(this.idioma.get("s_rotaciones"));
     subMenu2.setMnemonic(KeyEvent.VK_O);
@@ -384,6 +384,14 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
     subMenu3.add(menuItem);
     
     subMenu2.add(subMenu3);
+    
+    menuItem = new JMenuItem(this.idioma.get("s_rEspecifica"));
+    menuItem.setMnemonic(KeyEvent.VK_R);
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.ALT_MASK));
+    menuItem.setActionCommand("s_rEspecifica");
+    menuItem.addActionListener(this);
+    
+    subMenu2.add(menuItem);
     
     subMenu.add(subMenu2);
     
@@ -602,6 +610,11 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       escaladoImagen();
       JFrame.setDefaultLookAndFeelDecorated(true);
     }
+    if ("s_rEspecifica".equals(arg0.getActionCommand())) {
+      JFrame.setDefaultLookAndFeelDecorated(false);
+      rotacionImagen();
+      JFrame.setDefaultLookAndFeelDecorated(true);
+    }    
   }
   
   /**
@@ -1449,6 +1462,81 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       pDatos.add(tfAlto);
       pDatos.add(lbAncho);
       pDatos.add(tfAncho);
+      pInterpolaciones.add(rbVecinos);
+      pInterpolaciones.add(rbBilineal);
+      pElementos.add(pDatos, BorderLayout.NORTH);
+      pElementos.add(pInterpolaciones, BorderLayout.SOUTH);
+      pBotones.add(bAceptar);
+      pBotones.add(bCancelar);
+      pVentana.add(pElementos, BorderLayout.CENTER);
+      pVentana.add(pBotones, BorderLayout.SOUTH);
+      fVentana.setContentPane(pVentana);
+      fVentana.setSize(400, 125);
+      fVentana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      fVentana.setLocationRelativeTo(null);
+      fVentana.setResizable(false);
+      fVentana.setVisible(true);
+    }
+  }
+  
+  private void rotacionImagen() {
+    if (this.imagenFocus == null) {
+      mostrarError(22);
+    } else if (!this.imagenFocus.esGris()) {
+      mostrarError(23);
+    } else {
+      final JFrame fVentana = new JFrame(this.idioma.get("s_rEspecifica"));
+      JPanel pVentana = new JPanel(new BorderLayout());
+      JPanel pElementos = new JPanel(new BorderLayout());
+      JPanel pBotones = new JPanel();
+      JPanel pDatos = new JPanel();
+      JPanel pInterpolaciones = new JPanel();
+      JButton bAceptar = new JButton(this.idioma.get("mm_aceptar"));
+      JButton bCancelar = new JButton(this.idioma.get("mm_cancelar"));
+      final JTextField tfAngulo = new JTextField("0", 4);
+      JLabel lbAngulo = new JLabel("Angulo: ");
+      ButtonGroup grupo = new ButtonGroup();
+      final JRadioButton rbVecinos = new JRadioButton("Interpolación Vecino más próximo");
+      rbVecinos.setSelected(true);
+      rbVecinos.setActionCommand("vecinos");
+      JRadioButton rbBilineal = new JRadioButton("Interpolación Bilineal");
+      rbBilineal.setActionCommand("bilineal");
+      grupo.add(rbVecinos);
+      grupo.add(rbBilineal);
+      bCancelar.addActionListener(new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+          fVentana.dispose();
+        }
+      
+      });
+      bAceptar.addActionListener(new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+          try {
+            final Double ANGULO = Double.parseDouble(tfAngulo.getText()); 
+            if (ANGULO % 90 == 0) {
+              rotacion(90);
+            } else if (ANGULO % 180 == 0) {
+              rotacion(180);
+            } else if (ANGULO % 270 == 0) {
+              rotacion(270);
+            } else if (rbVecinos.isSelected()) {
+              imagenFocus.rotacionVecinos(ANGULO);
+            } else {
+              imagenFocus.escalarBilineal(2, 3);
+            }
+            fVentana.dispose();
+          } catch(NumberFormatException e) {
+            mostrarError(24);
+          }
+        }
+      
+      });
+      pDatos.add(lbAngulo);
+      pDatos.add(tfAngulo);
       pInterpolaciones.add(rbVecinos);
       pInterpolaciones.add(rbBilineal);
       pElementos.add(pDatos, BorderLayout.NORTH);

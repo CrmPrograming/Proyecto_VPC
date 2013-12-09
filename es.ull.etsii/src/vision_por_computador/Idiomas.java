@@ -49,6 +49,7 @@ public interface Idiomas {
         put("s_espejoVertical", "Espejo Vertical");
         put("s_traspuesta", "Traspuesta Imagen");
         put("s_rotaciones", "Rotaciones");
+        put("s_rEspecifica", "Rotaciones Específicas");
         put("s_m90", "Multiplo 90");
         put("s_90", "+ 90º");
         put("s_180", "+ 180º");
@@ -119,6 +120,7 @@ public interface Idiomas {
         put("s_espejoVertical", "Espejo Vertical");
         put("s_traspuesta", "Traspuesta Imagen");
         put("s_rotaciones", "Rotaciones");
+        put("s_rEspecifica", "Rotaciones Específicas");
         put("s_m90", "Multiplo 90");
         put("s_90", "+ 90º");
         put("s_180", "+ 180º");

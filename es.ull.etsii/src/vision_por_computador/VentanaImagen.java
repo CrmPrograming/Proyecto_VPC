@@ -616,6 +616,102 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     return (pixel);
   }
   
+  public void rotacionVecinos(final double ANGULO) {
+    VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
+    BufferedImage imgFoc = iFoc.getImagen();
+    final double W = imgFoc.getWidth();
+    final double H = imgFoc.getHeight();
+    ArrayList<Matriz> extremos = calcularExtremos(ANGULO, W, H);
+    Matriz trigo = new Matriz(new double[][] {{Math.cos(ANGULO), - Math.sin(ANGULO)},
+                                             { Math.sin(ANGULO), Math.cos(ANGULO)}});
+    final int N_ANCHO = calcularMaximo(extremos, 0);
+    final int N_ALTO = calcularMaximo(extremos, 1);
+    
+    BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
+     
+    for (int i = 0; i < N_ANCHO; i++) {
+      for (int j = 0; j < N_ALTO; j++) {
+        double[][] coordenadas = calcularCoordenadas(i, j, trigo);
+        double x = coordenadas[0][0];
+        double y = coordenadas[1][0];
+        double w = Math.round(x) + 1;
+        double v = Math.round(y) + 1;
+        if (w >= W) {
+          w = imgFoc.getWidth() - 2;
+        }
+        if (v >= H) {
+          v = imgFoc.getHeight() - 2;
+        }
+        
+        
+        final Point A = new Point((int) x, (int) v);
+        final Point B = new Point((int) w, (int) v);
+        final Point C = new Point((int) x, (int) y);
+        final Point D = new Point((int) w, (int) y);       
+        
+        imgNueva.setRGB(i,  j, pixelVecino(x, y, A, B, C, D)); 
+      }
+    }
+    final String FORMATO_FICHERO = "tif";
+    String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
+    String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
+    String nuevoNombre = nombre[0] + "_escalada." + FORMATO_FICHERO; 
+    String nuevaRuta = ruta[0] + nuevoNombre;      
+    VentanaImagen aux = new VentanaImagen(this.panelPrincipal.getCantidadImagenes(), 
+                                          imgNueva, 
+                                          nuevoNombre, 
+                                          this.debug, 
+                                          this.panelPrincipal,
+                                          nuevaRuta);   
+    this.panelPrincipal.getListaImagenes().add(aux);
+    this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);    
+    this.panelPrincipal.add(aux);
+    aux.fijarGris(true);
+    this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");    
+  }
+  
+  private ArrayList<Matriz> calcularExtremos(final double ANGULO, final double W, final double H) {
+    ArrayList<Matriz> result = new ArrayList<Matriz>();
+    double angulo = Math.toRadians(ANGULO);
+    
+    Matriz mTrigonometrica = new Matriz(new double[][] {{Math.cos(angulo), Math.sin(angulo)},
+                                                       {- Math.sin(angulo), Math.cos(angulo)}});
+    result.add(new Matriz(new double[][] {{0d}, {0d}}));
+    result.add(new Matriz(new double[][] {{W}, {0}}));
+    result.add(new Matriz(new double[][] {{0}, {H}}));
+    result.add(new Matriz(new double[][] {{W}, {H}}));
+    
+    for (int i = 0; i < 4; i++) {
+      result.set(i, mTrigonometrica.producto(result.get(i)));
+    }    
+    return (result);
+  }
+  
+  private int calcularMaximo(ArrayList<Matriz> extr,int opc) {
+    int result = 0;
+    // opc == 0 -> x, opc == 1 -> y
+    if (opc == 0) {
+      for (Matriz T: extr) {
+        if (T.getMatriz()[0][0] > result) {
+          result = (int) T.getMatriz()[0][0];
+        }
+      }
+    } else {
+      for (Matriz T: extr) {
+        if (T.getMatriz()[1][0] > result) {
+          result = (int) T.getMatriz()[1][0];
+        }
+      }
+    }
+    return (result);
+  }
+  
+  private double[][] calcularCoordenadas(int i, int j, Matriz trigo) {
+    double[][] result = null;
+    Matriz aux = new Matriz(new double[][] {{i}, {j}});
+    return (result);
+  }
+  
   /**
    * M&eacute;todo setter para cambiar 
    * el atributo id
