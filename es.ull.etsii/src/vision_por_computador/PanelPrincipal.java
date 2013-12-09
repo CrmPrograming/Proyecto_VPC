@@ -48,7 +48,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
   /**
    * Constante con el nombre de la aplicaci&oacute;n
    */
-  private final static String TITULO_APLICACION = "Sin nombre";
+  private final static String TITULO_APLICACION = "VisioStudio";
   /**
    * Constante con el nombre del fichero con la configuraci&oacute;n
    */
