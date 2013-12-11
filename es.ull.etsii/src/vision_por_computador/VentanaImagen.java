@@ -394,13 +394,15 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     for (int i = 0; i < this.bufferImagen.getWidth(); i++) {
       for (int j = 0; j < this.bufferImagen.getHeight(); j++) {
         color = new Color(this.bufferImagen.getRGB(i, j));
-        this.nivelGris[color.getRed()]++;
-        sumatorio += color.getRed();        
-        if (color.getRed() > this.valorMax) {
-          this.valorMax = color.getRed(); 
-        }
-        if (color.getRed() < this.valorMin) {
-          this.valorMin = color.getRed();
+        if ((color.getRed() == color.getBlue()) && (color.getRed() == color.getGreen())) {
+          this.nivelGris[color.getRed()]++;
+          sumatorio += color.getRed();        
+          if (color.getRed() > this.valorMax) {
+            this.valorMax = color.getRed(); 
+          }
+          if (color.getRed() < this.valorMin) {
+            this.valorMin = color.getRed();
+          }
         }
       }
     } 
@@ -416,8 +418,10 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     for (int i = 0; i < this.bufferImagen.getWidth(); i++) {
       for (int j = 0; j < this.bufferImagen.getHeight(); j++) {
         color = new Color(this.bufferImagen.getRGB(i, j));  
-        des = color.getRed() - this.brillo;        
-        sumDesviacion += Math.pow(des, 2);
+        if ((color.getRed() == color.getBlue()) && (color.getRed() == color.getGreen())) {
+          des = color.getRed() - this.brillo;        
+          sumDesviacion += Math.pow(des, 2);
+        }
       }
     } 
     this.contraste = Math.sqrt(sumDesviacion / total);
@@ -539,12 +543,21 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     int pixel = 0;
     double distancia = Double.MAX_VALUE;
     double distanciaTemporal = 0d;
+    try {
     for (Point punto: PUNTOS) {
       distanciaTemporal = Math.sqrt(Math.pow(punto.getX() - x, 2) + Math.pow(punto.getY() - y, 2));
       if (distanciaTemporal < distancia) {
         distancia = distanciaTemporal;
         pixel = this.bufferImagen.getRGB((int) punto.getX(), (int) punto.getY());
       }
+    }
+    } catch (ArrayIndexOutOfBoundsException e) {
+      System.out.println(this.bufferImagen.getWidth() + ", " + this.bufferImagen.getHeight());
+      for (Point punto: PUNTOS) {
+        System.out.println(punto);
+      }
+      System.out.println("x: " + x + ", y: " + y);
+      System.exit(-1);
     }
     return (pixel);
   }
@@ -643,18 +656,101 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
         final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
         final Vector OR_PP = OP_PP.restaVectores(OP_OR);        
         final Point pixel = OR_PP.getDestino();
-        if ((pixel.getX() > W) || (pixel.getX() < 0)
-          || (pixel.getY() > H) || (pixel.getY() < 0)) {
-          imgNueva.setRGB(i, j, Color.RED.getRGB());
+        if ((pixel.getX() >= W) || (pixel.getX() < 0)
+          || (pixel.getY() >= H) || (pixel.getY() < 0)) {
+          imgNueva.setRGB(i, j, Color.YELLOW.getRGB());
         } else {
-          imgNueva.setRGB(i, j, Color.BLACK.getRGB());
+          double x = pixel.getX();
+          double y = pixel.getY();
+          double w = Math.round(x) + 1;
+          double v = Math.round(y) + 1;
+          if (w >= W) {
+            w = imgFoc.getWidth() - 2;
+          }
+          if (v >= H) {
+            v = imgFoc.getHeight() - 2;
+          }        
+          final Point A = new Point((int) x, (int) v);
+          final Point B = new Point((int) w, (int) v);
+          final Point C = new Point((int) x, (int) y);
+          final Point D = new Point((int) w, (int) y);
+          
+          imgNueva.setRGB(i,  j, pixelVecino(x, y, A, B, C, D)); 
         }
       }    
     
     final String FORMATO_FICHERO = "tif";
     String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
     String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
-    String nuevoNombre = nombre[0] + "_escalada." + FORMATO_FICHERO; 
+    String nuevoNombre = nombre[0] + "_rotada." + FORMATO_FICHERO; 
+    String nuevaRuta = ruta[0] + nuevoNombre;      
+    VentanaImagen aux = new VentanaImagen(this.panelPrincipal.getCantidadImagenes(), 
+                                          imgNueva, 
+                                          nuevoNombre, 
+                                          this.debug, 
+                                          this.panelPrincipal,
+                                          nuevaRuta);   
+    this.panelPrincipal.getListaImagenes().add(aux);
+    this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);    
+    this.panelPrincipal.add(aux);
+    aux.fijarGris(true);
+    this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");    
+  }
+  
+  public void rotacionBilineal(final double ANGULO) {
+    VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
+    BufferedImage imgFoc = iFoc.getImagen();
+    final double W = imgFoc.getWidth();
+    final double H = imgFoc.getHeight();
+    ArrayList<Matriz> extremos = calcularExtremos(ANGULO, W, H);
+    final double ANGULO_RADIANES = Math.toRadians(ANGULO);
+    
+    Matriz trigo = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
+                                             { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
+    final int N_ANCHO = calcularMaximo(extremos, 0);
+    final int N_ALTO = calcularMaximo(extremos, 1);
+    
+    BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
+    
+    Matriz oOrigen = new Matriz(new double[][] {{0d}, {0d}});
+    oOrigen = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
+                                        { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}}).producto(oOrigen);
+    final Vector OP_OR = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point(0, 0));
+    
+    for (int i = 0; i < N_ANCHO; i++)
+      for (int j = 0; j < N_ALTO; j++) {
+        final Matriz aux = new Matriz(new double[][] {{i}, {j}});
+        final Matriz p = trigo.producto(aux);
+        final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
+        final Vector OR_PP = OP_PP.restaVectores(OP_OR);        
+        final Point pixel = OR_PP.getDestino();
+        if ((pixel.getX() >= W) || (pixel.getX() < 0)
+          || (pixel.getY() >= H) || (pixel.getY() < 0)) {
+          imgNueva.setRGB(i, j, Color.YELLOW.getRGB());
+        } else {
+          double x = pixel.getX();
+          double y = pixel.getY();
+          double w = Math.round(x) + 1;
+          double v = Math.round(y) + 1;
+          if (w >= W) {
+            w = imgFoc.getWidth() - 2;
+          }
+          if (v >= H) {
+            v = imgFoc.getHeight() - 2;
+          }        
+          final Point A = new Point((int) x, (int) v);
+          final Point B = new Point((int) w, (int) v);
+          final Point C = new Point((int) x, (int) y);
+          final Point D = new Point((int) w, (int) y);
+          
+          imgNueva.setRGB(i,  j, calcularPixel(imgFoc, x, y, A, B, C, D)); 
+        }
+      }    
+    
+    final String FORMATO_FICHERO = "tif";
+    String[] nombre = iFoc.getNombre().split("." + FORMATO_FICHERO);
+    String[] ruta = iFoc.getRuta().split(iFoc.getNombre());
+    String nuevoNombre = nombre[0] + "_rotada." + FORMATO_FICHERO; 
     String nuevaRuta = ruta[0] + nuevoNombre;      
     VentanaImagen aux = new VentanaImagen(this.panelPrincipal.getCantidadImagenes(), 
                                           imgNueva, 

@@ -1517,16 +1517,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
         public void actionPerformed(ActionEvent arg0) {
           try {
             final Double ANGULO = Double.parseDouble(tfAngulo.getText()); 
-            if (ANGULO % 90 == 0) {
-              rotacion(90);
-            } else if (ANGULO % 180 == 0) {
-              rotacion(180);
-            } else if (ANGULO % 270 == 0) {
-              rotacion(270);
-            } else if (rbVecinos.isSelected()) {
+            if (rbVecinos.isSelected()) {
               imagenFocus.rotacionVecinos(ANGULO);
             } else {
-              imagenFocus.escalarBilineal(2, 3);
+              imagenFocus.rotacionBilineal(ANGULO);
             }
             fVentana.dispose();
           } catch(NumberFormatException e) {
