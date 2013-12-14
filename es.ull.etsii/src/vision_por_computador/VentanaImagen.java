@@ -696,7 +696,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     ArrayList<Matriz> extremos = calcularExtremos(ANGULO, W, H);
     final double ANGULO_RADIANES = Math.toRadians(ANGULO);
     
-    Matriz trigo = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
+    Matriz tInversa = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
                                              { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
     final int N_ANCHO = calcularMaximo(extremos, 0);
     final int N_ALTO = calcularMaximo(extremos, 1);
@@ -704,8 +704,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
     
     Matriz oOrigen = new Matriz(new double[][] {{0d}, {0d}});
-    oOrigen = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
-                                        { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}}).producto(oOrigen);
+    oOrigen = tInversa.producto(oOrigen);
     final Vector OP_OR = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point(0, 0));
     
     int minY = Integer.MAX_VALUE;
@@ -723,7 +722,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     for (int i = 0; i < N_ANCHO; i++)
       for (int j = 0; j < N_ALTO; j++) {
         final Matriz aux = new Matriz(new double[][] {{i + minX}, {j + minY}});
-        final Matriz p = trigo.producto(aux);
+        final Matriz p = tInversa.producto(aux);
         final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
         final Vector OR_PP = OP_PP.restaVectores(OP_OR);
         Point pixel = OR_PP.getDestino();
@@ -776,7 +775,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     ArrayList<Matriz> extremos = calcularExtremos(ANGULO, W, H);
     final double ANGULO_RADIANES = Math.toRadians(ANGULO);
     
-    Matriz trigo = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
+    Matriz tInversa = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
                                              { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
     final int N_ANCHO = calcularMaximo(extremos, 0);
     final int N_ALTO = calcularMaximo(extremos, 1);
@@ -784,8 +783,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
     
     Matriz oOrigen = new Matriz(new double[][] {{0d}, {0d}});
-    oOrigen = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
-                                        { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}}).producto(oOrigen);
+    oOrigen = tInversa.producto(oOrigen);
     final Vector OP_OR = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point(0, 0));
     
     int minY = Integer.MAX_VALUE;
@@ -803,7 +801,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     for (int i = 0; i < N_ANCHO; i++)
       for (int j = 0; j < N_ALTO; j++) {
         final Matriz aux = new Matriz(new double[][] {{i + minX}, {j + minY}});
-        final Matriz p = trigo.producto(aux);
+        final Matriz p = tInversa.producto(aux);
         final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
         final Vector OR_PP = OP_PP.restaVectores(OP_OR);
         final Point pixel = OR_PP.getDestino();
@@ -852,7 +850,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     ArrayList<Matriz> result = new ArrayList<Matriz>();
     double angulo = Math.toRadians(ANGULO);
     
-    Matriz mTrigonometrica = new Matriz(new double[][] {{Math.cos(angulo), Math.sin(angulo)},
+    Matriz tDirecta = new Matriz(new double[][] {{Math.cos(angulo), Math.sin(angulo)},
                                                        {- Math.sin(angulo), Math.cos(angulo)}});
     result.add(new Matriz(new double[][] {{0d}, {0d}}));
     result.add(new Matriz(new double[][] {{W}, {0}}));
@@ -860,7 +858,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     result.add(new Matriz(new double[][] {{W}, {H}}));
     
     for (int i = 0; i < 4; i++) {
-      result.set(i, mTrigonometrica.producto(result.get(i)));
+      result.set(i, tDirecta.producto(result.get(i)));
     }
     return (result);
   }
