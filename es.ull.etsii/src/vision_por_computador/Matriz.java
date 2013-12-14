@@ -51,11 +51,11 @@ public class Matriz {
   }
 
   public int getM() {
-    return (m);
+    return (this.m);
   }
 
   public int getP() {
-    return (p);
+    return (this.p);
   }
   
   public double[][] getMatriz() {

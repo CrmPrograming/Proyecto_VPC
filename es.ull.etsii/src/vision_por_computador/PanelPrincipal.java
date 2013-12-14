@@ -1499,10 +1499,12 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       final JRadioButton rbVecinos = new JRadioButton("Interpolación Vecino más próximo");
       rbVecinos.setSelected(true);
       rbVecinos.setActionCommand("vecinos");
-      JRadioButton rbBilineal = new JRadioButton("Interpolación Bilineal");
+      final JRadioButton rbBilineal = new JRadioButton("Interpolación Bilineal");
       rbBilineal.setActionCommand("bilineal");
+      final JRadioButton rbRotarPintar = new JRadioButton("Rotar y Pintar");      
       grupo.add(rbVecinos);
       grupo.add(rbBilineal);
+      grupo.add(rbRotarPintar);
       bCancelar.addActionListener(new ActionListener() {
 
         @Override
@@ -1519,8 +1521,10 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
             final Double ANGULO = Double.parseDouble(tfAngulo.getText()); 
             if (rbVecinos.isSelected()) {
               imagenFocus.rotacionVecinos(ANGULO);
-            } else {
+            } else if (rbBilineal.isSelected()){
               imagenFocus.rotacionBilineal(ANGULO);
+            } else {
+              imagenFocus.rotarPintar(ANGULO);
             }
             fVentana.dispose();
           } catch(NumberFormatException e) {
@@ -1533,6 +1537,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       pDatos.add(tfAngulo);
       pInterpolaciones.add(rbVecinos);
       pInterpolaciones.add(rbBilineal);
+      pInterpolaciones.add(rbRotarPintar);
       pElementos.add(pDatos, BorderLayout.NORTH);
       pElementos.add(pInterpolaciones, BorderLayout.SOUTH);
       pBotones.add(bAceptar);
@@ -1540,7 +1545,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       pVentana.add(pElementos, BorderLayout.CENTER);
       pVentana.add(pBotones, BorderLayout.SOUTH);
       fVentana.setContentPane(pVentana);
-      fVentana.setSize(400, 125);
+      fVentana.setSize(500, 125);
       fVentana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       fVentana.setLocationRelativeTo(null);
       fVentana.setResizable(false);
