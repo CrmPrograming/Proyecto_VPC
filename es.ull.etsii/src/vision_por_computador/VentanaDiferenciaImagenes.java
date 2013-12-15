@@ -156,6 +156,7 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
       pPrincipal.getListaImagenes().add(aux);
       pPrincipal.setCantidadImagenes(pPrincipal.getCantidadImagenes() + 1);
       pPrincipal.add(aux);
+      aux.setAnguloGirado(imgFoco.getAnguloGirado());
       pPrincipal.getVentanaDebug().escribirMensaje("> Se ha mostrado la imagen diferencia");    
     }
   }
@@ -237,6 +238,7 @@ public class VentanaDiferenciaImagenes extends JFrame implements ActionListener 
         pPrincipal.getListaImagenes().add(aux);
         pPrincipal.setCantidadImagenes(pPrincipal.getCantidadImagenes() + 1);
         pPrincipal.add(aux);
+        aux.setAnguloGirado(imgFoco.getAnguloGirado());
         pPrincipal.getVentanaDebug().escribirMensaje("> Se ha construido el mapa de cambios");    
       }
     }

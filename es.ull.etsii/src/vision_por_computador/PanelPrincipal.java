@@ -1039,12 +1039,17 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       }
       for (int i = 0; i < W; i++) {
         for (int j = 0; j < H; j++) {
-          int a = new Color(imgFoc.getRGB(i, j)).getRed();
-          int b = nivelGris[a] * (MAX_PIXELS - 1) / M;
-          int result = b << 16;
-          result += b << 8;     
-          result += b;
-          imgNueva.setRGB(i, j, result);
+          Color cAux = new Color(imgFoc.getRGB(i, j));
+          if ((cAux.getRed() == cAux.getBlue() && (cAux.getRed() == cAux.getGreen()))) {
+            int a = cAux.getRed();
+            int b = nivelGris[a] * (MAX_PIXELS - 1) / M;
+            int result = b << 16;
+            result += b << 8;     
+            result += b;
+            imgNueva.setRGB(i, j, result);
+          } else {
+            imgNueva.setRGB(i, j, imgFoc.getRGB(i, j));
+          }
         }
       }
       final String FORMATO_FICHERO = "tif";
@@ -1062,6 +1067,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.cantidadImagenes++;
       this.add(aux);
       aux.fijarGris(true);
+      aux.setAnguloGirado(iFoc.getAnguloGirado());
       this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
       try {
         Thread.sleep(500);
@@ -1197,6 +1203,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.cantidadImagenes++;
       this.add(aux);
       aux.fijarGris(true);
+      aux.setAnguloGirado(iFoc.getAnguloGirado());
       this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
       
     }
@@ -1233,6 +1240,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.cantidadImagenes++;
       this.add(aux);
       aux.fijarGris(true);
+      aux.setAnguloGirado(iFoc.getAnguloGirado());
       this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
       
     }
@@ -1269,6 +1277,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.cantidadImagenes++;
       this.add(aux);
       aux.fijarGris(true);
+      aux.setAnguloGirado(iFoc.getAnguloGirado());
       this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
       
     }
@@ -1328,6 +1337,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.cantidadImagenes++;
       this.add(aux);
       aux.fijarGris(true);
+      aux.setAnguloGirado(iFoc.getAnguloGirado() + 90);
       this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
       
     }
@@ -1364,6 +1374,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.cantidadImagenes++;
       this.add(aux);
       aux.fijarGris(true);
+      aux.setAnguloGirado(iFoc.getAnguloGirado() + 180);
       this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
       
     }
@@ -1400,6 +1411,7 @@ public class PanelPrincipal extends JFrame implements ActionListener, Idiomas {
       this.cantidadImagenes++;
       this.add(aux);
       aux.fijarGris(true);
+      aux.setAnguloGirado(iFoc.getAnguloGirado() + 270);
       this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
       
     }

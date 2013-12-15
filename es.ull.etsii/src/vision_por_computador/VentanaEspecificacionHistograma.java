@@ -98,7 +98,8 @@ public class VentanaEspecificacionHistograma extends JFrame implements ActionLis
     }    
     this.pPrincipal.duplicarImagen();
     this.pPrincipal.getImgFoco().ajustarPixels(Vout);
-    this.pPrincipal.getImgFoco().fijarGris(true);    
+    this.pPrincipal.getImgFoco().fijarGris(true); 
+    this.pPrincipal.getImgFoco().setAnguloGirado(imgFoco.getAnguloGirado());
   }
   
   private double[] normalizarHistograma(int[] nGris) {

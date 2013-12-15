@@ -88,6 +88,10 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   private double contraste = 0.0d;
   
   private VentanaImagen copiaStatica;
+  
+  private double anguloGirado = 0d;
+  
+  private BufferedImage imgSinGiro = null;
   /**
 * Instancia un nuevo objeto
 * de tipo VentanaImagen.
@@ -108,6 +112,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.id = idVentana;
     this.debug = debg;
     this.bufferImagen = bImage;
+    this.imgSinGiro = bImage;
     this.nombre = nombreImagen;
     this.ruta = path;
     this.escalaGris = false;
@@ -263,6 +268,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
               debug.escribirMensaje("> Se ha cambiado a escala de grises la imagen en foco");
               panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);
               aux.fijarGris(true);
+              aux.setAnguloGirado(getAnguloGirado());
               panelPrincipal.setFocus(aux);
             }
           }
@@ -520,7 +526,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
         final Point C = new Point((int) x, (int) y);
         final Point D = new Point((int) w, (int) y);
         
-        imgNueva.setRGB(i, j, pixelVecino(x, y, A, B, C, D));
+        imgNueva.setRGB(i, j, pixelVecino(x, y, imgFoc, A, B, C, D));
       }
     }
     final String FORMATO_FICHERO = "tif";
@@ -538,28 +544,20 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);
     this.panelPrincipal.add(aux);
     aux.fijarGris(true);
+    aux.setAnguloGirado(iFoc.getAnguloGirado());
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
   }
   
-  private int pixelVecino(double x, double y, final Point ... PUNTOS) {
+  private int pixelVecino(double x, double y, BufferedImage imagen, final Point ... PUNTOS) {
     int pixel = 0;
     double distancia = Double.MAX_VALUE;
     double distanciaTemporal = 0d;
-    try {
     for (Point punto: PUNTOS) {
       distanciaTemporal = Math.sqrt(Math.pow(punto.getX() - x, 2) + Math.pow(punto.getY() - y, 2));
       if (distanciaTemporal < distancia) {
         distancia = distanciaTemporal;
-        pixel = this.bufferImagen.getRGB((int) punto.getX(), (int) punto.getY());
+        pixel = imagen.getRGB((int) punto.getX(), (int) punto.getY());
       }
-    }
-    } catch (ArrayIndexOutOfBoundsException e) {
-      System.out.println(this.bufferImagen.getWidth() + ", " + this.bufferImagen.getHeight());
-      for (Point punto: PUNTOS) {
-        System.out.println(punto);
-      }
-      System.out.println("x: " + x + ", y: " + y);
-      System.exit(-1);
     }
     return (pixel);
   }
@@ -606,6 +604,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);
     this.panelPrincipal.add(aux);
     aux.fijarGris(true);
+    aux.setAnguloGirado(iFoc.getAnguloGirado());
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
   }
   
@@ -627,17 +626,18 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
                              (int) (B.getY() + (C.getY() - A.getY() - D.getY())));
     punto3 = new Point((int) (punto3.getX() * w), (int) (punto3.getY() * w));
     punto3 = new Point((int) (punto3.getX() + punto2.getX()), (int) (punto3.getY() + punto2.getY()));
-    pixel = this.bufferImagen.getRGB((int) punto3.getX(), (int) punto3.getY());
+    pixel = imgFoc.getRGB((int) punto3.getX(), (int) punto3.getY());
     return (pixel);
   }  
   
   public void rotarPintar(final double ANGULO) {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
-    BufferedImage imgFoc = iFoc.getImagen();
+    BufferedImage imgFoc = iFoc.getImagenOriginal();
     final double W = imgFoc.getWidth();
     final double H = imgFoc.getHeight();
-    ArrayList<Matriz> extremos = calcularExtremos(ANGULO, W, H);
-    final double ANGULO_RADIANES = Math.toRadians(ANGULO);
+    final double ANGULO_RADIANES = Math.toRadians(ANGULO + iFoc.getAnguloGirado());
+    ArrayList<Matriz> extremos = calcularExtremos(ANGULO_RADIANES, W, H);
+    
     
     Matriz trigo = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), Math.sin(ANGULO_RADIANES)},
                                              { - Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
@@ -685,16 +685,18 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);
     this.panelPrincipal.add(aux);
     aux.fijarGris(true);
+    aux.setAnguloGirado(ANGULO + iFoc.getAnguloGirado());
+    aux.setImagenOriginal(iFoc.getImagenOriginal());
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
   }
   
   public void rotacionVecinos(final double ANGULO) {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
-    BufferedImage imgFoc = iFoc.getImagen();
+    BufferedImage imgFoc = iFoc.getImagenOriginal();
     final double W = imgFoc.getWidth();
     final double H = imgFoc.getHeight();
-    ArrayList<Matriz> extremos = calcularExtremos(ANGULO, W, H);
-    final double ANGULO_RADIANES = Math.toRadians(ANGULO);
+    final double ANGULO_RADIANES = Math.toRadians(ANGULO + iFoc.getAnguloGirado());
+    ArrayList<Matriz> extremos = calcularExtremos(ANGULO_RADIANES, W, H);
     
     Matriz tInversa = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
                                              { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
@@ -745,7 +747,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
           final Point C = new Point((int) x, (int) y);
           final Point D = new Point((int) w, (int) y);
           
-          imgNueva.setRGB(i, j, pixelVecino(x, y, A, B, C, D));
+          imgNueva.setRGB(i, j, pixelVecino(x, y, imgFoc, A, B, C, D));
         }
       }
     
@@ -764,16 +766,18 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);
     this.panelPrincipal.add(aux);
     aux.fijarGris(true);
+    aux.setAnguloGirado(ANGULO + iFoc.getAnguloGirado());
+    aux.setImagenOriginal(iFoc.getImagenOriginal());
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
   }
   
   public void rotacionBilineal(final double ANGULO) {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
-    BufferedImage imgFoc = iFoc.getImagen();
+    BufferedImage imgFoc = iFoc.getImagenOriginal();
     final double W = imgFoc.getWidth();
     final double H = imgFoc.getHeight();
-    ArrayList<Matriz> extremos = calcularExtremos(ANGULO, W, H);
-    final double ANGULO_RADIANES = Math.toRadians(ANGULO);
+    final double ANGULO_RADIANES = Math.toRadians(ANGULO + iFoc.getAnguloGirado());
+    ArrayList<Matriz> extremos = calcularExtremos(ANGULO_RADIANES, W, H);
     
     Matriz tInversa = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
                                              { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
@@ -843,15 +847,16 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.panelPrincipal.setCantidadImagenes(panelPrincipal.getCantidadImagenes() + 1);
     this.panelPrincipal.add(aux);
     aux.fijarGris(true);
+    aux.setAnguloGirado(ANGULO + iFoc.getAnguloGirado());
+    aux.setImagenOriginal(iFoc.getImagenOriginal());
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
   } 
   
   private ArrayList<Matriz> calcularExtremos(final double ANGULO, final double W, final double H) {
     ArrayList<Matriz> result = new ArrayList<Matriz>();
-    double angulo = Math.toRadians(ANGULO);
     
-    Matriz tDirecta = new Matriz(new double[][] {{Math.cos(angulo), Math.sin(angulo)},
-                                                       {- Math.sin(angulo), Math.cos(angulo)}});
+    Matriz tDirecta = new Matriz(new double[][] {{Math.cos(ANGULO), Math.sin(ANGULO)},
+                                                       {- Math.sin(ANGULO), Math.cos(ANGULO)}});
     result.add(new Matriz(new double[][] {{0d}, {0d}}));
     result.add(new Matriz(new double[][] {{W}, {0}}));
     result.add(new Matriz(new double[][] {{0}, {H}}));
@@ -1001,6 +1006,22 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   
   public int[] getNivelGris() {
     return (this.nivelGris);
+  }
+  
+  public double getAnguloGirado() {
+    return (this.anguloGirado);
+  }
+  
+  public void setAnguloGirado(double aG) {
+    this.anguloGirado = aG;
+  }
+  
+  public BufferedImage getImagenOriginal() {
+    return (this.imgSinGiro);
+  }
+  
+  public void setImagenOriginal(BufferedImage imagen) {
+    this.imgSinGiro = imagen;
   }
   
   public String toString() {

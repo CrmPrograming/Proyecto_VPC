@@ -174,8 +174,10 @@ public class VentanaTransformacionTrozos extends JFrame implements ActionListene
           pFinal = listaPuntos.get(tramoActual + 1);
         }
       }      
+      double angulo = pPrincipal.getImgFoco().getAnguloGirado();
       pPrincipal.duplicarImagen();
       pPrincipal.getImgFoco().ajustarPixels(Vout);
+      pPrincipal.getImgFoco().setAnguloGirado(angulo);
     }
         
     private class PanelGrafica extends JPanel {

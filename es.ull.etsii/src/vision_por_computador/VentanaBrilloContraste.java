@@ -134,6 +134,7 @@ public class VentanaBrilloContraste extends JFrame implements ActionListener {
     this.panelPrincipal.duplicarImagen();
     this.panelPrincipal.getImgFoco().ajustarPixels(this.tVout);
     this.panelPrincipal.getImgFoco().fijarGris(true);
+    this.panelPrincipal.getImgFoco().setAnguloGirado(this.panelPrincipal.getImgFoco().getAnguloGirado());
   }
 
 }
