@@ -639,8 +639,8 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     ArrayList<Matriz> extremos = calcularExtremos(ANGULO_RADIANES, W, H);
     
     
-    Matriz trigo = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), Math.sin(ANGULO_RADIANES)},
-                                             { - Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
+    Matriz tDirecta = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), Math.sin(ANGULO_RADIANES)},
+                                                { - Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
     final int N_ANCHO = calcularMaximo(extremos, 0);
     final int N_ALTO = calcularMaximo(extremos, 1);
     
@@ -648,7 +648,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     
     int minY = Integer.MAX_VALUE;
     int minX = Integer.MAX_VALUE;
-    
+        
     for (Matriz T: extremos) {
       if (minY > T.getMatriz()[1][0]) {
         minY = (int) T.getMatriz()[1][0];
@@ -665,9 +665,10 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     for (int i = 0; i < W; i++)
       for (int j = 0; j < H; j++) {
         final Matriz aux = new Matriz(new double[][] {{i}, {j}});
-        final Matriz p = trigo.producto(aux);
+        final Matriz p = tDirecta.producto(aux);
         final Point pixel = new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]);
-        imgNueva.setRGB((int) pixel.getX() - minX, (int) pixel.getY() - minY, imgFoc.getRGB(i, j));        
+        if (((pixel.getX() - minX) < N_ANCHO) && ((pixel.getY() - minY) < N_ALTO))
+          imgNueva.setRGB((int) pixel.getX() - minX, (int) pixel.getY() - minY, imgFoc.getRGB(i, j));        
       }
     
     final String FORMATO_FICHERO = "tif";
