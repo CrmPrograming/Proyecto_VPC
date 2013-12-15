@@ -156,12 +156,11 @@ public class VentanaTransformacionTrozos extends JFrame implements ActionListene
       int tramoActual = 0;
       final int MAX_PIXEL = 256;
       int[] Vout = new int[MAX_PIXEL];
-      for (int i = 0; i < nTramos; i++) {
+      for (int i = 0; i <= nTramos; i++) {
         int q = Integer.parseInt(this.vPuntos[i].getText()); 
         int a = Integer.parseInt(this.vValores[i].getText());
         listaPuntos.add(new Point(q, a));
       }
-      listaPuntos.add(new Point(255, 255));
       Point pInicial = listaPuntos.get(tramoActual);
       Point pFinal = listaPuntos.get(tramoActual + 1);
       for (int a = 0; a < MAX_PIXEL; a++) {
@@ -202,7 +201,6 @@ public class VentanaTransformacionTrozos extends JFrame implements ActionListene
           for (int i = 0; i < nTramos; i++) {
             dibujarRecta(g, i);
           }
-          g.drawLine(255, 0, Integer.parseInt(vPuntos[nTramos].getText()), 255 - Integer.parseInt(vValores[nTramos].getText()));
           g.setColor(aux);
         }        
       }
