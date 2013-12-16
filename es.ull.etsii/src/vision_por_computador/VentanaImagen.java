@@ -628,8 +628,8 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     ArrayList<Matriz> extremos = calcularExtremos(ANGULO_RADIANES, W, H);
     
     
-    Matriz tDirecta = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), Math.sin(ANGULO_RADIANES)},
-                                                { - Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
+    Matriz tDirecta = new Matriz(new float[][] {{(float) Math.cos(ANGULO_RADIANES), (float) Math.sin(ANGULO_RADIANES)},
+                                                { (float) - Math.sin(ANGULO_RADIANES), (float) Math.cos(ANGULO_RADIANES)}});
     final int N_ANCHO = calcularMaximo(extremos, 0);
     final int N_ALTO = calcularMaximo(extremos, 1);
     
@@ -653,7 +653,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
      
     for (int i = 0; i < W; i++)
       for (int j = 0; j < H; j++) {
-        final Matriz aux = new Matriz(new double[][] {{i}, {j}});
+        final Matriz aux = new Matriz(new float[][] {{i}, {j}});
         final Matriz p = tDirecta.producto(aux);
         final Point pixel = new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]);
         if (((pixel.getX() - minX) < N_ANCHO) && ((pixel.getY() - minY) < N_ALTO))
@@ -688,16 +688,16 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     final double ANGULO_RADIANES = Math.toRadians(ANGULO + iFoc.getAnguloGirado());
     ArrayList<Matriz> extremos = calcularExtremos(ANGULO_RADIANES, W, H);
     
-    Matriz tInversa = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
-                                             { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
+    Matriz tInversa = new Matriz(new float[][] {{(float) Math.cos(ANGULO_RADIANES), (float) - Math.sin(ANGULO_RADIANES)},
+                                             { (float) Math.sin(ANGULO_RADIANES), (float) Math.cos(ANGULO_RADIANES)}});
     final int N_ANCHO = calcularMaximo(extremos, 0);
     final int N_ALTO = calcularMaximo(extremos, 1);
     
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
     
-    Matriz oOrigen = new Matriz(new double[][] {{0d}, {0d}});
+    Matriz oOrigen = new Matriz(new float[][] {{0f}, {0f}});
     oOrigen = tInversa.producto(oOrigen);
-    final Vector OP_OR = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point(0, 0));
+    final Vector OP_OR = new Vector(new Punto(oOrigen.getMatriz()[0][0], oOrigen.getMatriz()[1][0]), new Punto(0, 0));
     
     int minY = Integer.MAX_VALUE;
     int minX = Integer.MAX_VALUE;
@@ -713,34 +713,28 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     
     for (int i = 0; i < N_ANCHO; i++)
       for (int j = 0; j < N_ALTO; j++) {
-        final Matriz aux = new Matriz(new double[][] {{i + minX}, {j + minY}});
+        final Matriz aux = new Matriz(new float[][] {{i + minX}, {j + minY}});
         final Matriz p = tInversa.producto(aux);
-        final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
+        final Vector OP_PP = new Vector(new Punto(oOrigen.getMatriz()[0][0], oOrigen.getMatriz()[1][0]), new Punto(p.getMatriz()[0][0], p.getMatriz()[1][0]));
         final Vector OR_PP = OP_PP.restaVectores(OP_OR);
-        Point pixel = OR_PP.getDestino();
-        if ((pixel.getX() >= W) || (pixel.getX() < 0)
-          || (pixel.getY() >= H) || (pixel.getY() < 0)) {
+        Punto pixel = OR_PP.getDestino();
+        if ((pixel.getA() >= W) || (pixel.getA() < 0)
+          || (pixel.getB() >= H) || (pixel.getB() < 0)) {
           imgNueva.setRGB(i, j, Color.YELLOW.getRGB());
         } else {
-          double x = pixel.getX();
-          double y = pixel.getY();
+          double x = pixel.getA();
+          double y = pixel.getB();
           double w = Math.round(x);
           double v = Math.round(y);
           double X = Math.floor(x);
           double Y = Math.floor(y);       
-          if (w >= W) {
-            w = imgFoc.getWidth() - 2;
+          if (w == W) {
+            w = imgFoc.getWidth() - 1;
           }
-          if (v >= H) {
-            v = imgFoc.getHeight() - 2;
+          if (v == H) {
+            v = imgFoc.getHeight() - 1;
           }
           
-          if (X <= 0) {
-            X = 2;
-          }
-          if (Y <= 0) {
-            Y = 2;
-          }
           final Point A = new Point((int) X, (int) v);
           final Point B = new Point((int) w, (int) v);
           final Point C = new Point((int) X, (int) Y);
@@ -770,59 +764,64 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
   }
   
+  //TODO
+  
   public void rotacionBilineal(final double ANGULO) {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
     BufferedImage imgFoc = iFoc.getImagenOriginal();
-    final double W = imgFoc.getWidth();
-    final double H = imgFoc.getHeight();
-    final double ANGULO_RADIANES = Math.toRadians(ANGULO + iFoc.getAnguloGirado());
+    final int W = imgFoc.getWidth();
+    final int H = imgFoc.getHeight();
+    final float ANGULO_RADIANES = (float) Math.toRadians(ANGULO + iFoc.getAnguloGirado());
     ArrayList<Matriz> extremos = calcularExtremos(ANGULO_RADIANES, W, H);
     
-    Matriz tInversa = new Matriz(new double[][] {{Math.cos(ANGULO_RADIANES), - Math.sin(ANGULO_RADIANES)},
-                                             { Math.sin(ANGULO_RADIANES), Math.cos(ANGULO_RADIANES)}});
+    Matriz tInversa = new Matriz(new float[][] {{(float) Math.cos(ANGULO_RADIANES), (float) - Math.sin(ANGULO_RADIANES)},
+                                             { (float) Math.sin(ANGULO_RADIANES), (float) Math.cos(ANGULO_RADIANES)}});
     final int N_ANCHO = calcularMaximo(extremos, 0);
     final int N_ALTO = calcularMaximo(extremos, 1);
     
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
     
-    Matriz oOrigen = new Matriz(new double[][] {{0d}, {0d}});
+    Matriz oOrigen = new Matriz(new float[][] {{0f}, {0f}});
     oOrigen = tInversa.producto(oOrigen);
-    final Vector OP_OR = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point(0, 0));
+    //final Vector OP_OR = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point(0, 0));
+    final Vector OP_OR = new Vector(new Punto(oOrigen.getMatriz()[0][0], oOrigen.getMatriz()[1][0]), new Punto(0f, 0f));
     
-    int minY = Integer.MAX_VALUE;
-    int minX = Integer.MAX_VALUE;
+    
+    float minY = Float.MAX_VALUE;
+    float minX = Float.MAX_VALUE;
     
     for (Matriz T: extremos) {
       if (minY > T.getMatriz()[1][0]) {
-        minY = (int) T.getMatriz()[1][0];
+        minY = T.getMatriz()[1][0];
       }
       if (minX > T.getMatriz()[0][0]) {
-        minX = (int) T.getMatriz()[0][0];
+        minX = T.getMatriz()[0][0];
       }
     }
     
     for (int i = 0; i < N_ANCHO; i++)
       for (int j = 0; j < N_ALTO; j++) {
-        final Matriz aux = new Matriz(new double[][] {{i + minX}, {j + minY}});
+        final Matriz aux = new Matriz(new float[][] {{i + minX}, {j + minY}});
         final Matriz mp = tInversa.producto(aux);
-        final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) mp.getMatriz()[0][0], (int) mp.getMatriz()[1][0]));
+       // final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) mp.getMatriz()[0][0], (int) mp.getMatriz()[1][0]));
+        final Vector OP_PP = new Vector(new Punto(oOrigen.getMatriz()[0][0], oOrigen.getMatriz()[1][0]), new Punto(mp.getMatriz()[0][0], mp.getMatriz()[1][0]));
         final Vector OR_PP = OP_PP.restaVectores(OP_OR);
-        final Point pixel = OR_PP.getDestino();
-        if ((pixel.getX() >= W) || (pixel.getX() < 0)
-          || (pixel.getY() >= H) || (pixel.getY() < 0)) {
+        final Punto pixel = OR_PP.getDestino();
+        if ((pixel.getA() >= W) || (pixel.getA() < 0)
+          || (pixel.getB() >= H) || (pixel.getB() < 0)) {
           imgNueva.setRGB(i, j, Color.YELLOW.getRGB());
         } else {
-          float x = (float) pixel.getX();
-          float y = (float) pixel.getY();
+          float x = (float) pixel.getA();
+          float y = (float) pixel.getB();
           int w = (int) Math.ceil(x);
           int v = (int) Math.ceil(y);
           int X = (int) Math.floor(x);
           int Y = (int) Math.floor(y);  
-          if (w >= W) {
-            w = imgFoc.getWidth() - 2;
+          if (w == W) {
+            w--;
           }
-          if (v >= H) {
-            v = imgFoc.getHeight() - 2;
+          if (v == H) {
+            v--;
           }
           
           int A = new Color(imgFoc.getRGB(X, v)).getRed();
@@ -860,12 +859,12 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
   private ArrayList<Matriz> calcularExtremos(final double ANGULO, final double W, final double H) {
     ArrayList<Matriz> result = new ArrayList<Matriz>();
     
-    Matriz tDirecta = new Matriz(new double[][] {{Math.cos(ANGULO), Math.sin(ANGULO)},
-                                                       {- Math.sin(ANGULO), Math.cos(ANGULO)}});
-    result.add(new Matriz(new double[][] {{0d}, {0d}}));
-    result.add(new Matriz(new double[][] {{W}, {0}}));
-    result.add(new Matriz(new double[][] {{0}, {H}}));
-    result.add(new Matriz(new double[][] {{W}, {H}}));
+    Matriz tDirecta = new Matriz(new float[][] {{(float) Math.cos(ANGULO), (float) Math.sin(ANGULO)},
+                                                       {(float) - Math.sin(ANGULO), (float) Math.cos(ANGULO)}});
+    result.add(new Matriz(new float[][] {{0f}, {0f}}));
+    result.add(new Matriz(new float[][] {{(float) W}, {0}}));
+    result.add(new Matriz(new float[][] {{0f}, {(float) H}}));
+    result.add(new Matriz(new float[][] {{(float) W}, {(float) H}}));
     
     for (int i = 0; i < 4; i++) {
       result.set(i, tDirecta.producto(result.get(i)));

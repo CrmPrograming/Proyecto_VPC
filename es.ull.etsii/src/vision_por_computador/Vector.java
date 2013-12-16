@@ -1,30 +1,28 @@
 package vision_por_computador;
 
-import java.awt.Point;
-
 public class Vector {
   
-  private Point origen;
-  private Point destino;
-  private int[] coordenadas;
-  private int distancia;
+  private Punto origen;
+  private Punto destino;
+  private float[] coordenadas;
+  private float distancia;
   
-  public Vector(Point x, Point y) {
+  public Vector(Punto x, Punto y) {
     this.origen = x;
     this.destino = y;
-    this.coordenadas = new int[2];
-    this.coordenadas[0] = (int) (y.getX() - x.getX());
-    this.coordenadas[1] = (int) (y.getY() - x.getY());
-    this.distancia = (int) Math.sqrt(Math.pow((x.getX() - y.getX()), 2) + Math.pow((x.getY() - y.getY()), 2));
+    this.coordenadas = new float[2];
+    this.coordenadas[0] = (y.getA() - x.getA());
+    this.coordenadas[1] = (y.getB() - x.getB());
+    this.distancia = (float) Math.sqrt(Math.pow((x.getA() - y.getA()), 2) + Math.pow((x.getB() - y.getB()), 2));
   }
   
-  public Vector(int u, int v, Point origen) {
-    this.coordenadas = new int[2];
+  public Vector(float u, float v, Punto origen) {
+    this.coordenadas = new float[2];
     this.coordenadas[0] = u;
     this.coordenadas[1] = v;
     this.origen = origen;
-    this.destino = new Point((int) (u + origen.getX()), (int) (v + origen.getY()));
-    this.distancia = (int) Math.sqrt(Math.pow((origen.getX() - destino.getX()), 2) + Math.pow((origen.getY() - destino.getY()), 2));
+    this.destino = new Punto((u + origen.getA()), (v + origen.getB()));
+    this.distancia = (float) Math.sqrt(Math.pow((origen.getA() - destino.getA()), 2) + Math.pow((origen.getB() - destino.getB()), 2));
   }
   
   public Vector restaVectores(Vector v) {
@@ -33,19 +31,19 @@ public class Vector {
     return (result);
   }
   
-  public int[] getCoordenadas() {
+  public float[] getCoordenadas() {
     return (this.coordenadas);
   }
   
-  public Point getOrigen() {
+  public Punto getOrigen() {
     return (this.origen);
   }
   
-  public Point getDestino() {
+  public Punto getDestino() {
     return (this.destino);
   }
   
-  public int getDistancia() {
+  public float getDistancia() {
     return (this.distancia);
   }
 
