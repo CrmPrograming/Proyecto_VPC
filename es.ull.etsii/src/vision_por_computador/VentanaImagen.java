@@ -415,6 +415,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
       }
     }
     // Entropía
+    this.entropia = 0;
     for (int i = 0; i < this.nivelGris.length; i++) {
       double prob = (double) this.nivelGris[i] / total;
       if (prob > 0.0d)
@@ -501,30 +502,34 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
 * @since 1.0
 *
 */
+
   public void escalarVecino(final int N_ANCHO, final int N_ALTO) {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
     BufferedImage imgFoc = iFoc.getImagen();
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
     final double W = imgFoc.getWidth();
     final double H = imgFoc.getHeight();
-    final double INDICE_X = (double) W / (double) N_ANCHO;
-    final double INDICE_Y = (double) H / (double) N_ALTO;
+    final double INDICE_X = (double) N_ANCHO / (double) W;
+    final double INDICE_Y = (double) N_ALTO / (double) H;
     for (int i = 0; i < N_ANCHO; i++) {
       for (int j = 0; j < N_ALTO; j++) {
-        double x = INDICE_X * i;
-        double y = INDICE_Y * j;
-        double w = Math.round(x) + 1;
-        double v = Math.round(y) + 1;
-        if (w >= W) {
-          w = imgFoc.getWidth() - 2;
+        double x = i / INDICE_X;
+        double y = j / INDICE_Y;
+        double w = Math.round(x);
+        double v = Math.round(y);
+        double X = Math.floor(x);
+        double Y = Math.floor(y);       
+        if (w == W) {
+          w = imgFoc.getWidth() - 1;
         }
-        if (v >= H) {
-          v = imgFoc.getHeight() - 2;
+        if (v == H) {
+          v = imgFoc.getHeight() - 1;
         }
-        final Point A = new Point((int) x, (int) v);
+        
+        final Point A = new Point((int) X, (int) v);
         final Point B = new Point((int) w, (int) v);
-        final Point C = new Point((int) x, (int) y);
-        final Point D = new Point((int) w, (int) y);
+        final Point C = new Point((int) X, (int) Y);
+        final Point D = new Point((int) w, (int) Y);
         
         imgNueva.setRGB(i, j, pixelVecino(x, y, imgFoc, A, B, C, D));
       }
@@ -568,25 +573,31 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     BufferedImage imgNueva = new BufferedImage(N_ANCHO, N_ALTO, BufferedImage.TYPE_INT_RGB);
     final int W = imgFoc.getWidth();
     final int H = imgFoc.getHeight();
-    final double INDICE_X = (double) W / (double) N_ANCHO;
-    final double INDICE_Y = (double) H / (double) N_ALTO;
+    final float INDICE_X = (float) N_ANCHO / W;
+    final float INDICE_Y = (float) N_ALTO / H;
     for (int i = 0; i < N_ANCHO; i++) {
       for (int j = 0; j < N_ALTO; j++) {
-        double x = INDICE_X * i;
-        double y = INDICE_Y * j;
-        double w = Math.round(x) + 1;
-        double v = Math.round(y) + 1;
-        if (w >= W) {
-          w = imgFoc.getWidth() - 2;
+        float x = i / INDICE_X;
+        float y = j / INDICE_Y;
+        int w = (int) Math.ceil(x);
+        int v = (int) Math.ceil(y);
+        int X = (int) Math.floor(x);
+        int Y = (int) Math.floor(y);       
+        if (w == W) {
+          w--;
         }
-        if (v >= H) {
-          v = imgFoc.getHeight() - 2;
+        if (v == H) {
+          v--;
         }
-        final Point A = new Point((int) x, (int) v);
-        final Point B = new Point((int) w, (int) v);
-        final Point C = new Point((int) x, (int) y);
-        final Point D = new Point((int) w, (int) y);
-        imgNueva.setRGB(i, j, calcularPixel(imgFoc, x, y, A, B, C, D));
+        int A = new Color(imgFoc.getRGB(X, v)).getRed();
+        int B = new Color(imgFoc.getRGB(w, v)).getRed();
+        int C = new Color(imgFoc.getRGB(X, Y)).getRed();
+        int D = new Color(imgFoc.getRGB(w, Y)).getRed();
+        float p = x - X;
+        float q = y - Y;
+        int P = (int) (C + (D - C) * p + (A - C) * q + (B + C - A - D) * p * q);
+        int colorRGB = (P << 16 | P << 8 | P);
+        imgNueva.setRGB(i,  j,  colorRGB);
       }
     }
     final String FORMATO_FICHERO = "tif";
@@ -606,29 +617,7 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     aux.fijarGris(true);
     aux.setAnguloGirado(iFoc.getAnguloGirado());
     this.debug.escribirMensaje("> Se ha mostrado la ecualización de histograma");
-  }
-  
-  private int calcularPixel(BufferedImage imgFoc, double x, double y, Point A, Point B, Point C, Point D) {
-    int pixel = 0;
-    double p = Math.abs(x - C.getX());
-    double q = Math.abs(y - C.getY());
-    double w = p * q;
-    // punto1 == C + (D - C)p
-    Point punto1 = new Point((int) (D.getX() - C.getX()), (int) (D.getY() - C.getY()));
-    punto1 = new Point((int) (punto1.getX() * p), (int) (punto1.getY() * p));
-    punto1 = new Point((int) (punto1.getX() + C.getX()), (int) (punto1.getY() + C.getY()));
-    // punto2 == punto1 + (A - C)q
-    Point punto2 = new Point((int) (A.getX() - C.getX()), (int) (A.getY() - C.getY()));
-    punto2 = new Point((int) (punto2.getX() * q), (int) (punto2.getY() * q));
-    punto2 = new Point((int) (punto1.getX() + punto2.getX()), (int) (punto1.getY() + punto2.getY()));
-    // punto3 == punto2 + (B + C - A - D)pq
-    Point punto3 = new Point((int) (B.getX() + (C.getX() - A.getX() - D.getX())),
-                             (int) (B.getY() + (C.getY() - A.getY() - D.getY())));
-    punto3 = new Point((int) (punto3.getX() * w), (int) (punto3.getY() * w));
-    punto3 = new Point((int) (punto3.getX() + punto2.getX()), (int) (punto3.getY() + punto2.getY()));
-    pixel = imgFoc.getRGB((int) punto3.getX(), (int) punto3.getY());
-    return (pixel);
-  }  
+  } 
   
   public void rotarPintar(final double ANGULO) {
     VentanaImagen iFoc = this.panelPrincipal.getImgFoco();
@@ -735,18 +724,27 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
         } else {
           double x = pixel.getX();
           double y = pixel.getY();
-          double w = Math.round(x) + 1;
-          double v = Math.round(y) + 1;
+          double w = Math.round(x);
+          double v = Math.round(y);
+          double X = Math.floor(x);
+          double Y = Math.floor(y);       
           if (w >= W) {
             w = imgFoc.getWidth() - 2;
           }
           if (v >= H) {
             v = imgFoc.getHeight() - 2;
           }
-          final Point A = new Point((int) x, (int) v);
+          
+          if (X <= 0) {
+            X = 2;
+          }
+          if (Y <= 0) {
+            Y = 2;
+          }
+          final Point A = new Point((int) X, (int) v);
           final Point B = new Point((int) w, (int) v);
-          final Point C = new Point((int) x, (int) y);
-          final Point D = new Point((int) w, (int) y);
+          final Point C = new Point((int) X, (int) Y);
+          final Point D = new Point((int) w, (int) Y);
           
           imgNueva.setRGB(i, j, pixelVecino(x, y, imgFoc, A, B, C, D));
         }
@@ -806,30 +804,36 @@ public class VentanaImagen extends JInternalFrame implements Runnable {
     for (int i = 0; i < N_ANCHO; i++)
       for (int j = 0; j < N_ALTO; j++) {
         final Matriz aux = new Matriz(new double[][] {{i + minX}, {j + minY}});
-        final Matriz p = tInversa.producto(aux);
-        final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) p.getMatriz()[0][0], (int) p.getMatriz()[1][0]));
+        final Matriz mp = tInversa.producto(aux);
+        final Vector OP_PP = new Vector(new Point((int) oOrigen.getMatriz()[0][0], (int) oOrigen.getMatriz()[1][0]), new Point((int) mp.getMatriz()[0][0], (int) mp.getMatriz()[1][0]));
         final Vector OR_PP = OP_PP.restaVectores(OP_OR);
         final Point pixel = OR_PP.getDestino();
         if ((pixel.getX() >= W) || (pixel.getX() < 0)
           || (pixel.getY() >= H) || (pixel.getY() < 0)) {
           imgNueva.setRGB(i, j, Color.YELLOW.getRGB());
         } else {
-          double x = pixel.getX();
-          double y = pixel.getY();
-          double w = Math.round(x) + 1;
-          double v = Math.round(y) + 1;
+          float x = (float) pixel.getX();
+          float y = (float) pixel.getY();
+          int w = (int) Math.ceil(x);
+          int v = (int) Math.ceil(y);
+          int X = (int) Math.floor(x);
+          int Y = (int) Math.floor(y);  
           if (w >= W) {
             w = imgFoc.getWidth() - 2;
           }
           if (v >= H) {
             v = imgFoc.getHeight() - 2;
           }
-          final Point A = new Point((int) x, (int) v);
-          final Point B = new Point((int) w, (int) v);
-          final Point C = new Point((int) x, (int) y);
-          final Point D = new Point((int) w, (int) y);
           
-          imgNueva.setRGB(i, j, calcularPixel(imgFoc, x, y, A, B, C, D));
+          int A = new Color(imgFoc.getRGB(X, v)).getRed();
+          int B = new Color(imgFoc.getRGB(w, v)).getRed();
+          int C = new Color(imgFoc.getRGB(X, Y)).getRed();
+          int D = new Color(imgFoc.getRGB(w, Y)).getRed();
+          float p = x - X;
+          float q = y - Y;
+          int P = (int) (C + (D - C) * p + (A - C) * q + (B + C - A - D) * p * q);
+          int colorRGB = (P << 16 | P << 8 | P);
+          imgNueva.setRGB(i,  j,  colorRGB);
         }
       }
     
